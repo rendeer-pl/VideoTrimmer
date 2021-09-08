@@ -28,6 +28,12 @@ namespace VideoTrimmer
             }
             */
 
+            // Build the window title
+            string windowTitle = Globals.appTitle;
+#if DEBUG
+            windowTitle += " DEBUG";
+#endif
+
             // Check if ffmpeg.exe is present in folder
             if (System.IO.File.Exists(Globals.appOriginPath + "/ffmpeg.exe"))
             {
@@ -35,14 +41,14 @@ namespace VideoTrimmer
                 MainWindow mainWindow = new MainWindow();
                 mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
                 mainWindow.Show();
-                mainWindow.Title = Globals.appTitle;
+                mainWindow.Title = windowTitle;
             }
             else
             {
                 // FFmpeg not found
                 NoFFMPEGWindow noFFMPEGWindow = new NoFFMPEGWindow();
                 noFFMPEGWindow.Show();
-                noFFMPEGWindow.Title = Globals.appTitle;
+                noFFMPEGWindow.Title = windowTitle;
             }
         }
     }

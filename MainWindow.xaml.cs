@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Forms;
+using System.Windows.Input;
+using System.Windows.Media.Animation;
 using Path = System.IO.Path;
 
 namespace VideoTrimmer
@@ -11,19 +13,15 @@ namespace VideoTrimmer
     /// </summary>
     public partial class MainWindow : Window
     {
+        public MediaTimeline mediaPlayerTimeline = new MediaTimeline();
+        public MediaClock mediaPlayerClock;
+        public bool SliderUpdatesPossible = true;
 
         public VideoProcessing videoProcessing = new VideoProcessing();
 
         public MainWindow()
         {
             InitializeComponent();
-
-            // Updating the window title bar
-            string windowTitle = Globals.appTitle;
-#if DEBUG
-            windowTitle += " DEBUG";
-#endif
-            this.Title = windowTitle;
 
             // Updating the "About" footer
             aboutFooter.Content = Globals.company + " " + Globals.customVersion;
@@ -52,6 +50,8 @@ namespace VideoTrimmer
             timecodeEnd.IsEnabled = NewLockStatus;
             removeAudio.IsEnabled = NewLockStatus;
             recompressFile.IsEnabled = NewLockStatus;
+            PlayPauseButton.IsEnabled = NewLockStatus;
+            TimelineSlider.IsEnabled = NewLockStatus;
 
             // if the form is unlocking then enable the recompression options depending on the checkbox value. If the form is locking, then just disable everything.
             if (NewLockStatus == true) RecompressFile_ValueChanged(null, null);
@@ -105,6 +105,22 @@ namespace VideoTrimmer
             // Get video duration and paste it into "End" timecode TextBox
             timecodeStart.Text = "00:00:00";
             timecodeEnd.Text = videoProcessing.GetDuration().ToString(@"hh\:mm\:ss");
+
+            mediaPlayerTimeline.Source = new Uri(videoProcessing.GetFilePath());
+            mediaPlayerClock = mediaPlayerTimeline.CreateClock();
+            MediaPlayer.Clock = mediaPlayerClock;
+
+            mediaPlayerClock.CurrentTimeInvalidated += delegate (object sender, EventArgs e)
+            {
+                MediaPlayerOnTimeChanged(sender, e);
+            };
+
+            TimelineSlider.AddHandler(MouseLeftButtonUpEvent,
+                      new MouseButtonEventHandler(SliderValueManuallyChanged),
+                      true);
+            TimelineSlider.AddHandler(MouseLeftButtonDownEvent,
+                      new MouseButtonEventHandler(SliderInteractionStarted),
+                      true);
 
             // If file path is long, trim it
             String FileNameToDisplay = "";
@@ -314,6 +330,62 @@ namespace VideoTrimmer
         private void Window_DragLeave(object sender, System.Windows.DragEventArgs e)
         {
             Background = Brushes.Black;
+        }
+
+        // Methods related to the video player
+
+        // When the media opens, initialize the "Seek To" slider maximum value
+        // to the total number of miliseconds in the length of the media clip.
+        private void MediaPlayerOnMediaOpened(object sender, EventArgs e)
+        {
+            TimelineSlider.Maximum = MediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds;
+            TimelineSlider.Value = 0;
+            mediaPlayerClock.Controller.Pause();
+        }
+
+        // This is the automatic update as video plays
+        private void MediaPlayerOnTimeChanged(object sender, EventArgs e)
+        {
+            if (SliderUpdatesPossible) TimelineSlider.Value = mediaPlayerClock.CurrentTime.Value.TotalMilliseconds;
+        }
+
+        // User interaction - button clicked
+        private void OnPlayPauseButtonClicked(object sender, RoutedEventArgs e)
+        {
+            if (mediaPlayerTimeline.Source == null) return;
+
+            if (MediaPlayer.IsLoaded)
+            {
+                if (MediaPlayer.Position == MediaPlayer.NaturalDuration) mediaPlayerClock.Controller.Seek(TimeSpan.Zero, TimeSeekOrigin.BeginTime);
+                if (mediaPlayerClock.IsPaused)
+                {
+                    PlayPauseButton.Content = "❚❚";
+                    mediaPlayerClock.Controller.Resume();
+                }
+                else
+                {
+                    PlayPauseButton.Content = "▶";
+                    mediaPlayerClock.Controller.Pause();
+                }
+            }
+        }
+
+        // User clicked on the slider, so let's disable automatic slider updates
+        private void SliderInteractionStarted(object sender, MouseButtonEventArgs e)
+        {
+            SliderUpdatesPossible = false;
+        }
+
+        // User finished interaction with the slider, let's update the video
+        private void SliderValueManuallyChanged(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            bool wasPaused = mediaPlayerClock.IsPaused;
+            if (wasPaused == false) mediaPlayerClock.Controller.Pause();
+            int SliderValue = (int)TimelineSlider.Value;
+            TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
+            mediaPlayerClock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
+            if (wasPaused == false) mediaPlayerClock.Controller.Resume();
+            SliderUpdatesPossible = true;
         }
     }
 }

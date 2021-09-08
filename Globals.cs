@@ -11,7 +11,7 @@ public static class Globals
     private const string majorVersion = "0";
     private const string minorVersion = "2";
     private const string releaseVersion = "9";
-    private const string buildDate = "200229";
+    private const string buildDate = "200301";
 
     public const string assemblyVersion = majorVersion + "." + minorVersion + "." + releaseVersion + ".0";
     public const string customVersion = majorVersion + "." + minorVersion + "." + releaseVersion + "." + buildDate;
