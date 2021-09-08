@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 public static class Globals
 {
@@ -14,10 +10,12 @@ public static class Globals
 
     private const string majorVersion = "0";
     private const string minorVersion = "2";
-    private const string releaseVersion = "6";
-    private const string buildDate = "200217";
+    private const string releaseVersion = "7";
+    private const string buildDate = "200218";
 
     public const string assemblyVersion = majorVersion + "." + minorVersion + "." + releaseVersion + ".0";
     public const string customVersion = majorVersion + "." + minorVersion + "." + releaseVersion + "." + buildDate;
+
+    public static readonly string appOriginPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
 }

@@ -214,7 +214,7 @@ namespace VideoTrimmer
 
 
             // forge the command
-            ConsoleCommand = "/C ffmpeg -ss " + Start.ToString() + " -i \"" + FilePath + "\" -t " + Duration.ToString() + " ";
+            ConsoleCommand = "/C " + Globals.appOriginPath + "/ffmpeg -ss " + Start.ToString() + " -i \"" + FilePath + "\" -t " + Duration.ToString() + " ";
 
             // are we recompressing the video?
             if (ShouldRecompress == false) ConsoleCommand += "-c copy ";

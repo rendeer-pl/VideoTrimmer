@@ -29,7 +29,7 @@ namespace VideoTrimmer
             */
 
             // Check if ffmpeg.exe is present in folder
-            if (System.IO.File.Exists(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/ffmpeg.exe"))
+            if (System.IO.File.Exists(Globals.appOriginPath + "/ffmpeg.exe"))
             {
                 Console.WriteLine("FFmpeg has been found");
                 MainWindow mainWindow = new MainWindow();
