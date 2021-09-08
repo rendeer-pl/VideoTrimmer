@@ -16,8 +16,12 @@ namespace VideoTrimmer
         private TimeSpan FileDuration;
         private WindowsMediaPlayer Player = new WindowsMediaPlayer();
         private ResultsWindowContents result;
-        string[] SupportedVideoFormats = new string[] { ".mp4", ".mpg", ".mpeg", ".wmv", ".mov", ".mts", ".m2ts", ".vob" };
-        string[] SupportedAudioFormats = new string[] { ".mp3", ".wav", ".aiff" };
+        private string[] SupportedVideoFormats = new string[] { ".mp4", ".mpg", ".mpeg", ".wmv", ".mov", ".mts", ".m2ts", ".vob" };
+        private string[] SupportedAudioFormats = new string[] { ".mp3", ".wav", ".aiff" };
+        private TimeSpan Start;
+        private TimeSpan End;
+        private bool ShouldRemoveAudio;
+        private bool ShouldRecompress;
 
 
         public bool LoadFile(string File)
@@ -84,7 +88,7 @@ namespace VideoTrimmer
         public bool CheckIfFileIsAccepted(string FileToCheck)
         {
             // compare against lists of supported extensions          
-            if (Array.IndexOf(SupportedVideoFormats, Path.GetExtension(FileToCheck)) >=0 || Array.IndexOf(SupportedAudioFormats, Path.GetExtension(FileToCheck)) >= 0)
+            if (Array.IndexOf(SupportedVideoFormats, Path.GetExtension(FileToCheck)) >= 0 || Array.IndexOf(SupportedAudioFormats, Path.GetExtension(FileToCheck)) >= 0)
             {
                 return true;
             }
@@ -118,7 +122,15 @@ namespace VideoTrimmer
             }
         }
 
-        public ResultsWindowContents Execute(TimeSpan Start, TimeSpan End, bool ShouldRemoveAudio, bool ShouldRecompress)
+        public void SetParameters(TimeSpan NewStart, TimeSpan NewEnd, bool NewShouldRemoveAudio, bool NewShouldRecompress)
+        {
+            Start = NewStart;
+            End = NewEnd;
+            ShouldRemoveAudio = NewShouldRemoveAudio;
+            ShouldRecompress = NewShouldRecompress;
+        }
+
+        public ResultsWindowContents Execute()
         {
 
             TimeSpan Duration = End - Start;

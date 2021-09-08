@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Forms;
 using Path = System.IO.Path;
-using static VideoTrimmer.VideoProcessing;
 
 namespace VideoTrimmer
 {
@@ -16,7 +15,7 @@ namespace VideoTrimmer
     public partial class MainWindow : Window
     {
 
-        VideoProcessing videoProcessing = new VideoProcessing();
+        public VideoProcessing videoProcessing = new VideoProcessing();
         
         public MainWindow()
         {
@@ -24,7 +23,7 @@ namespace VideoTrimmer
 
             // Updating the "About" footer
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".190525";
+            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".190527";
         }
 
         // Used to enable or disable editable fields
@@ -184,24 +183,12 @@ namespace VideoTrimmer
             TimeSpan Start = TimeSpan.Parse(timecodeStart.Text);
             TimeSpan End = TimeSpan.Parse(timecodeEnd.Text);
 
-            // Execute the trimming logic!
-            ResultsWindowContents result = videoProcessing.Execute(Start, End, (bool)removeAudio.IsChecked, (bool)recompressFile.IsChecked);
+            // set process settings
+            videoProcessing.SetParameters(Start, End, (bool)removeAudio.IsChecked, (bool)recompressFile.IsChecked);
 
-            if (result.success==true)
-            {
-                // Displays the MessageBox
-                // TODO: Replace with a custom window
-                _ = System.Windows.Forms.MessageBox.Show(result.message, result.caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // Open the folder
-                string argument = "/select, \"" + result.newFileName + "\"";
-                Process.Start("explorer.exe", argument);
-            } else
-            {
-                // Displays the MessageBox
-                // TODO: Replace with a custom window
-                _ = System.Windows.Forms.MessageBox.Show(result.message, result.caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            // open the progress window that executes the main process
+            ProgressWindow progressWindow = new ProgressWindow();
+            progressWindow.ShowDialog();
 
         }
 
