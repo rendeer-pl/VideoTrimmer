@@ -17,6 +17,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
+using Path = System.IO.Path;
+using System.Drawing;
 
 namespace VideoTrimmer
 {
@@ -35,7 +37,7 @@ namespace VideoTrimmer
             InitializeComponent();
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".190512";
+            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".190516";
    
         }
 
@@ -44,6 +46,29 @@ namespace VideoTrimmer
             trimVideoButton.IsEnabled = NewLockStatus;
             timecodeStart.IsEnabled = NewLockStatus;
             timecodeEnd.IsEnabled = NewLockStatus;
+
+            return;
+        }
+
+        private void OpenSelectedFile(string File)
+        {
+            var player = new WindowsMediaPlayer();
+            var clip = player.newMedia(File);
+            FileDuration = TimeSpan.FromSeconds(clip.duration);
+            timecodeEnd.Text = FileDuration.ToString();
+
+            ChangeFieldsStatus(true);
+
+            String FileName = System.IO.Path.GetFileName(File);
+            String FileRoot = System.IO.Path.GetPathRoot(File);
+
+            String FileNameToDisplay = "";
+
+            if (File.Length > 40) FileNameToDisplay = FileRoot + "...\\" + FileName;
+            else FileNameToDisplay = File;
+
+            fileNameLabel.Content = "✔️ " + FileNameToDisplay;
+            fileNameLabel.ToolTip = File;
 
             return;
         }
@@ -62,23 +87,8 @@ namespace VideoTrimmer
                 case System.Windows.Forms.DialogResult.OK:
                     File = fileDialog.FileName;
 
-                    var player = new WindowsMediaPlayer();
-                    var clip = player.newMedia(File);
-                    FileDuration = TimeSpan.FromSeconds(clip.duration);
-                    timecodeEnd.Text = FileDuration.ToString();
-
-                    ChangeFieldsStatus(true);
-
-                    String FileName = System.IO.Path.GetFileName(File);
-                    String FileRoot = System.IO.Path.GetPathRoot(File);
-
-                    String FileNameToDisplay = "";
-
-                    if (File.Length > 40) FileNameToDisplay = FileRoot + "...\\" + FileName;
-                    else FileNameToDisplay = File;
-
-                    fileNameLabel.Content = "✔️ " + FileNameToDisplay;
-                    fileNameLabel.ToolTip = File;
+                    OpenSelectedFile(File);
+                    
                     break;
                 case System.Windows.Forms.DialogResult.Cancel:
                 default:
@@ -197,11 +207,6 @@ namespace VideoTrimmer
             Process.Start("explorer.exe", argument);
         }
 
-        private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
         public void ButtonShowAbout_Click(object sender, RoutedEventArgs e)
         {
             string Text;
@@ -211,5 +216,48 @@ namespace VideoTrimmer
             System.Windows.Forms.MessageBox.Show(Text);
         }
 
+        private void Window_DragEnter(object sender, System.Windows.DragEventArgs e)
+        {
+            string[] files = (string[])(e.Data.GetData("FileDrop", false));
+            if (files != null)
+            {
+                string draggedFile = files[0];
+
+                if (Path.GetExtension(draggedFile) == ".mp4")
+                {
+                    Console.WriteLine("Dragged file recognized!");
+                    Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0, 0x77, 0));
+                }
+                else
+                {
+                    Console.WriteLine("Dragged file not recognized.");
+                    Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0x88, 0, 0));
+                }
+            }
+        }
+
+
+
+        private void Window_DragDrop(object sender, System.Windows.DragEventArgs e)
+        {
+            Background = System.Windows.Media.Brushes.Black;
+            string[] files = (string[])(e.Data.GetData("FileDrop", false));
+            string droppedFile = files[0];
+            Console.WriteLine(Path.GetExtension(droppedFile));
+            if (Path.GetExtension(droppedFile)==".mp4")
+            {
+                Console.WriteLine("Dropped file recognized!");
+                OpenSelectedFile(droppedFile);
+            }
+            else
+            {
+                Console.WriteLine("Dropped file not recognized.");
+            }
+        }
+
+        private void Window_DragLeave(object sender, System.Windows.DragEventArgs e)
+        {
+            Background = System.Windows.Media.Brushes.Black;
+        }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VideoTrimmer"
         mc:Ignorable="d"
-        Title="Video Trimmer" Height="256" Width="430" ResizeMode="NoResize" Background="Black">
+        Title="Video Trimmer" Height="256" Width="430" ResizeMode="NoResize" Background="Black" DragEnter="Window_DragEnter" DragLeave="Window_DragLeave" Drop="Window_DragDrop" AllowDrop="True">
     <Grid Margin="30,20,30,20">
 
         <Grid.RowDefinitions>
