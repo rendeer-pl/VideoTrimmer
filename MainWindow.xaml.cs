@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -22,6 +23,10 @@ namespace VideoTrimmer
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        String File = null;
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -30,18 +35,22 @@ namespace VideoTrimmer
         private void ButtonFileOpen_Click(object sender, RoutedEventArgs e)
         {
             var fileDialog = new System.Windows.Forms.OpenFileDialog();
+            fileDialog.Filter = "videos (*.mp4)|*.mp4";
+            fileDialog.RestoreDirectory = true;
             var result = fileDialog.ShowDialog();
+
             switch (result)
             {
                 case System.Windows.Forms.DialogResult.OK:
-                    var file = fileDialog.FileName;
-                    fileNameLabel.Content = "✅ " + file;
-                    fileNameLabel.ToolTip = file;
+                    File = fileDialog.FileName;
+                    fileNameLabel.Content = "✅ " + File;
+                    fileNameLabel.ToolTip = File;
                     break;
                 case System.Windows.Forms.DialogResult.Cancel:
                 default:
                     fileNameLabel.Content = "No file selected";
                     fileNameLabel.ToolTip = "No file selected";
+                    File = null;
                     break;
             }
         }
@@ -54,23 +63,54 @@ namespace VideoTrimmer
         private void ButtonTrimVideo_Click(object sender, RoutedEventArgs e)
         {
             // TODO: Validate file
+            String File = fileNameLabel.ToolTip.ToString();
+
 
             // TODO: Validate timecodes
+            String Start = timecodeStart.Text;
+            String End = timecodeEnd.Text;
 
             // TODO: Put together a console command
+            String FilePath = System.IO.Path.GetDirectoryName(File);
+            String FileName = System.IO.Path.GetFileNameWithoutExtension(File);
+            String FileExtension = System.IO.Path.GetExtension(File);
 
-            // TODO: Execute console command
-            Process p = new Process();
-            p.StartInfo.FileName = "cmd.exe";
-            p.StartInfo.Arguments = @"/C dir /p";
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.UseShellExecute = false;
-            p.Start();
-            string output = p.StandardOutput.ReadToEnd();
-            MessageBox.Show(output);
-            p.WaitForExit();
+            String NewPartialPath = FilePath + "\\" + FileName + "_trim_";
+
+            bool FoundUniqueName = false;
+            int UniqueFilenameIndex = 0;
+
+            while(FoundUniqueName == false)
+            {
+                if (System.IO.File.Exists(NewPartialPath + UniqueFilenameIndex + FileExtension))
+                {
+                    Console.WriteLine("File found: " + NewPartialPath + UniqueFilenameIndex + FileExtension);
+                    UniqueFilenameIndex++;
+                }
+                else
+                {
+                    Console.WriteLine("File not found: " + NewPartialPath + UniqueFilenameIndex + FileExtension);
+                    FoundUniqueName = true;
+                }
+            }
+
+            String NewFileName = NewPartialPath + UniqueFilenameIndex + FileExtension;
 
 
+            String ConsoleCommand = "/C ffmpeg -ss " + Start + " -i \"" + File + "\" -to " + End + " -c copy \"" + NewFileName + "\"";
+
+            
+
+            // Execute console command
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.FileName = "cmd.exe";
+            startInfo.Arguments = ConsoleCommand;
+            process.StartInfo = startInfo;
+            process.Start();
+            MessageBox.Show(ConsoleCommand);
+            Process.Start("explorer.exe", FilePath);
         }
 
         private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
