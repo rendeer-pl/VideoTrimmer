@@ -90,20 +90,35 @@ namespace VideoTrimmer
             }
         }
 
+        internal void UpdateProgress(int newProgress, bool isCompleted)
+        {
+            if (newProgress < 0) newProgress = 0;
+
+            if ((newProgress > 99) && (isCompleted == false)) newProgress = 99;
+
+            if (isCompleted == true) newProgress = 100;
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                ProgressBar.IsIndeterminate = false;
+                ProgressValue.Visibility = Visibility.Visible;
+                ProgressBar.Value = newProgress;
+                ProgressValue.Content = newProgress.ToString() + "%";
+            }), DispatcherPriority.Background);
+        }
+
         internal void TrimmingComplete(ResultsWindowContents newResult)
         {
             result = newResult;
             IsProcessInProgress = false;
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                ProgressBar.IsIndeterminate = false;
-
                 Caption.Content = result.caption;
                 Message.Content = result.message;
                 Message.Visibility = Visibility.Visible;
                 AbortButton.Content = "CLOSE";
                 CommandButton.Visibility = Visibility.Visible;
-                ProgressValue.Visibility = Visibility.Visible;
+                
             }), DispatcherPriority.Background);
 
             if (result.success == true)
@@ -111,8 +126,7 @@ namespace VideoTrimmer
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     SystemSounds.Asterisk.Play();
-                    ProgressBar.Value = 100;
-                    ProgressValue.Content = "100%";
+                    UpdateProgress(100, true);
                 }), DispatcherPriority.Background);
                 
 

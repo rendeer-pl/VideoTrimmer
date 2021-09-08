@@ -14,7 +14,9 @@ namespace VideoTrimmer
         private String FileExtension;
         private String FileDirectory;
         private TimeSpan FileDuration;
+        private float FileFramerate;
         private String NewFileName;
+        private float CurrentFrame;
         private String ConsoleCommand;
         private WindowsMediaPlayer Player = new WindowsMediaPlayer();
         Process process = new Process();
@@ -106,7 +108,41 @@ namespace VideoTrimmer
         // Handles output from the transcoding process
         private void ProcessEventHandler(object e, DataReceivedEventArgs outLine)
         {
-            Console.WriteLine(DateTime.Now + " - " + outLine.Data);
+            if ((outLine.Data != null) && (ShouldRecompress==true))
+            {
+
+                if (FileFramerate == 0.0F)
+                {
+                    string[] outputArray = outLine.Data.Split(' ');
+
+                    int FPSIndex = Array.IndexOf(outputArray, "fps,");
+
+                    if (FPSIndex > -1)
+                    {
+                        float.TryParse(outputArray[FPSIndex - 1], out FileFramerate);
+                        Console.WriteLine("FileFramerate: " + FileFramerate);
+                    }
+
+                }
+                else
+                {
+
+                    if (outLine.Data.Substring(0,6) == "frame=")
+                    {
+                        float newCurrentFrame;
+                        float.TryParse(outLine.Data.Substring(6), out newCurrentFrame);
+                        if (newCurrentFrame > 0) CurrentFrame = newCurrentFrame;
+                        int progressValue = Convert.ToInt32(CurrentFrame / ((End-Start).TotalSeconds * FileFramerate) * 100);
+
+                        progressWindow.UpdateProgress(progressValue, false);
+                        
+                        
+                        Console.WriteLine(progressValue + "%");
+
+                    }
+                }
+                //Console.WriteLine(DateTime.Now + " FFMPEG Output: " + outLine.Data);
+            }
         }
 
 
@@ -172,7 +208,7 @@ namespace VideoTrimmer
             // are we removing audio?
             if (ShouldRemoveAudio == true) ConsoleCommand += "-an ";
 
-            ConsoleCommand += "\"" + NewFileName + "\"";
+            ConsoleCommand += "\"" + NewFileName + "\" -progress pipe:1";
             // CONSOLE COMMAND END
 
 
@@ -186,9 +222,9 @@ namespace VideoTrimmer
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 CreateNoWindow = true,
-        };
+            };
 
-            // bind methods to receiving output data from pricess
+            // bind methods to receiving output data from the process
             process.OutputDataReceived += new DataReceivedEventHandler(ProcessEventHandler);
             process.ErrorDataReceived += new DataReceivedEventHandler(ProcessEventHandler);
             process.EnableRaisingEvents = true;
@@ -199,6 +235,9 @@ namespace VideoTrimmer
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
+
+            if (ShouldRecompress) progressWindow.UpdateProgress(0, false);
+
         }
 
         private void ProcessExited(object sender, EventArgs e)

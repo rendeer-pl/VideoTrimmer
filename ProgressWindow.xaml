@@ -8,7 +8,7 @@
         Title="Progress" Height="200" Width="500" Background="Black" ResizeMode="NoResize" Margin="0,0,0,0" Closing="Window_Closing" ContentRendered="OnContentRendered">
     <Grid Margin="20,20,20,20">
         <Label Name="Caption" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,0,0,0" Content="Trimming..." Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat" FontWeight="Bold" Width="406" />
-        <ProgressBar Name="ProgressBar" HorizontalAlignment="Center" Height="20" Margin="0,30,0,0" VerticalAlignment="Top" Width="390" IsEnabled="False" Value="0" IsIndeterminate="True"/>
+        <ProgressBar Name="ProgressBar" HorizontalAlignment="Center" Height="20" Margin="0,30,0,0" VerticalAlignment="Top" Width="390" IsEnabled="False" Value="0" />
         <Label Visibility="Hidden" Name="ProgressValue" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,28,0,0" Content="0%" Foreground="Black" FontFamily="/VideoTrimmer;component/#Montserrat Medium"  />
         <Button Name="CommandButton" Content="Copy command to clipboard" Width="Auto"  Foreground="#FF00AEFF" HorizontalAlignment="Right" VerticalAlignment="Top"  Margin="0,55,30,0" FontFamily="/VideoTrimmer;component/#Montserrat Medium" FontSize="10" Background="{x:Null}" HorizontalContentAlignment="Right" TabIndex="2" BorderBrush="{x:Null}" Click="CommandButton_ClickAsync" Visibility="Hidden" />
         <Label Name="Message" Content="" Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,76,0,0" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" FontSize="10" Width="397" MaxWidth="408"  >
