@@ -23,7 +23,7 @@ namespace VideoTrimmer
 
             // Updating the "About" footer
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".200210";
+            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".200216";
         }
 
         // Used to enable or disable editable fields
@@ -40,6 +40,7 @@ namespace VideoTrimmer
             else
             {
                 DesiredFileSize.IsEnabled = NewLockStatus;
+                DesiredFileSizeLabel.IsEnabled = NewLockStatus;
             }
 
             return;
@@ -50,6 +51,7 @@ namespace VideoTrimmer
         {
             bool NewLockStatus = (bool)recompressFile.IsChecked;
             DesiredFileSize.IsEnabled = NewLockStatus;
+            DesiredFileSizeLabel.IsEnabled = NewLockStatus;
         }
 
         // Reset window to state without file selected

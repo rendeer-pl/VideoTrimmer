@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Video Trimmer" Height="300" Width="430" ResizeMode="NoResize" Background="Black" DragEnter="Window_DragEnter" DragLeave="Window_DragLeave" Drop="Window_DragDrop" AllowDrop="True">
     <Grid Margin="30,20,30,20">
-
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="30"/>
@@ -36,12 +36,32 @@
         <Separator Grid.ColumnSpan="2" Height="2" Margin="0,6,0,0" Grid.Row="2" VerticalAlignment="Top"/>
         <!-- options -->
         <StackPanel Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2" VerticalAlignment="Center" Margin="0,5,0,0">
-            <CheckBox Name="removeAudio" Content="Remove audio" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="The output video will not contain any audio streams"/>
-            <CheckBox Name="recompressFile" Content="Recompress file" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="Trimming will take significantly more time, but will offer greater precision while trimming" Checked="RecompressFile_ValueChanged" Unchecked="RecompressFile_ValueChanged" />
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type CheckBox}">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="#FFADADAD"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Resources>
+            <CheckBox Name="removeAudio" ToolTipService.ShowOnDisabled="True" Content="Remove audio" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="The output video will not contain any audio streams."/>
+            <CheckBox Name="recompressFile" ToolTipService.ShowOnDisabled="True" Content="Recompress file" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="Trimming will take significantly more time, but will offer greater precision while trimming." Checked="RecompressFile_ValueChanged" Unchecked="RecompressFile_ValueChanged" />
         </StackPanel>
         <StackPanel Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="2" VerticalAlignment="Center" Orientation="Horizontal" Margin="0,5,0,0">
-            <Label Content="Max file size (in MB):" VerticalAlignment="Center" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium"/>
-            <TextBox Name="DesiredFileSize" IsEnabled="False" Height="20" Text="0" Width="45" LostFocus="DesiredFileSize_LostFocus"  TextAlignment="Right" MaxLength="4" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Right" BorderBrush="{x:Null}" Margin="0,0,0,0" VerticalAlignment="Center"/>
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Label}">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="#FFADADAD"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Resources>
+            <Label Name="DesiredFileSizeLabel" Content="Max file size (in MB):" ToolTip="Will keep the output file below the specified MB limit. Requires 'Recompress file' to be set to true." ToolTipService.ShowOnDisabled="True" IsEnabled="False" VerticalAlignment="Center" FontFamily="/VideoTrimmer;component/#Montserrat Medium"/>
+            <TextBox Name="DesiredFileSize" ToolTip="Will keep the output file below the specified MB limit. Requires 'Recompress file' to be set to true." ToolTipService.ShowOnDisabled="True" IsEnabled="False" Height="20" Text="0" Width="45" LostFocus="DesiredFileSize_LostFocus"  TextAlignment="Right" MaxLength="4" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Right" BorderBrush="{x:Null}" Margin="0,0,0,0" VerticalAlignment="Center"/>
         </StackPanel>
 
 
