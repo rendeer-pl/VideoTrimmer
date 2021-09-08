@@ -1,21 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using Path = System.IO.Path;
 using WMPLib;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace VideoTrimmer
 {
     public class VideoProcessing
     {
-        String FilePath;
-        String FileName;
-        String FileRoot;
-        String FileExtension;
-        String FileDirectory;
-        TimeSpan FileDuration;
-        WindowsMediaPlayer Player = new WindowsMediaPlayer();
-        ResultsWindowContents result;
+        private String FilePath;
+        private String FileName;
+        private String FileRoot;
+        private String FileExtension;
+        private String FileDirectory;
+        private TimeSpan FileDuration;
+        private WindowsMediaPlayer Player = new WindowsMediaPlayer();
+        private ResultsWindowContents result;
+        string[] SupportedVideoFormats = new string[] { ".mp4", ".mpg", ".mpeg", ".wmv", ".mov", ".mts", ".m2ts", ".vob" };
+        string[] SupportedAudioFormats = new string[] { ".mp3", ".wav", ".aiff" };
+
 
         public bool LoadFile(string File)
         {
@@ -28,6 +31,9 @@ namespace VideoTrimmer
             // Get video duration
             var clip = Player.newMedia(FilePath);
             FileDuration = TimeSpan.FromSeconds(clip.duration);
+
+
+
 
             return false;
         }
@@ -51,10 +57,34 @@ namespace VideoTrimmer
             return FileDuration;
         }
 
+        private string GetSupportedFormats(string[] Source)
+        {
+            string OutputString = "";
+            bool FirstLoopElement = true;
+            foreach (string SupportedFormat in Source)
+            {
+                if (FirstLoopElement == true) FirstLoopElement = false;
+                else OutputString += ";";
+                OutputString += "*" + SupportedFormat;
+            }
+            return OutputString;
+        }
+
+
+        public string GetSupportedVideoFormats()
+        {
+            return GetSupportedFormats(SupportedVideoFormats);
+        }
+
+        public string GetSupportedAudioFormats()
+        {
+            return GetSupportedFormats(SupportedAudioFormats);
+        }
+
         public bool CheckIfFileIsAccepted(string FileToCheck)
         {
-            // TODO: compare against an enum of supported extensions
-            if (Path.GetExtension(FileToCheck) == ".mp4")
+            // compare against lists of supported extensions          
+            if (Array.IndexOf(SupportedVideoFormats, Path.GetExtension(FileToCheck)) >=0 || Array.IndexOf(SupportedAudioFormats, Path.GetExtension(FileToCheck)) >= 0)
             {
                 return true;
             }

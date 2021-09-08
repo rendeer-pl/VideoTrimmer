@@ -64,7 +64,7 @@ namespace VideoTrimmer
             fileNameLabel.ToolTip = "No video selected";
             timecodeStart.Text = "00:00:00";
             timecodeEnd.Text = "00:00:00";
-            videoProcessing = null;
+            videoProcessing = new VideoProcessing();
             SetFieldsLockStatus(false);
 
             return;
@@ -106,9 +106,12 @@ namespace VideoTrimmer
         // Called when clicked on the "Select File" button
         private void ButtonFileOpen_Click(object sender, RoutedEventArgs e)
         {
-            var fileDialog = new System.Windows.Forms.OpenFileDialog
+            string FilterParams = "Video files ("+ videoProcessing.GetSupportedVideoFormats() + ")|"+videoProcessing.GetSupportedVideoFormats();
+            FilterParams += "|Audio files (" + videoProcessing.GetSupportedAudioFormats() + ")|" + videoProcessing.GetSupportedAudioFormats();
+            
+            var fileDialog = new OpenFileDialog
             {
-                Filter = "videos (*.mp4)|*.mp4", // TODO: introduce enum with supported file types
+                Filter = FilterParams,
                 RestoreDirectory = true
             };
             var result = fileDialog.ShowDialog();
@@ -181,10 +184,7 @@ namespace VideoTrimmer
             TimeSpan Start = TimeSpan.Parse(timecodeStart.Text);
             TimeSpan End = TimeSpan.Parse(timecodeEnd.Text);
 
-            // initialize vars that will be used in results window
-            string caption;
-            string message;
-
+            // Execute the trimming logic!
             ResultsWindowContents result = videoProcessing.Execute(Start, End, (bool)removeAudio.IsChecked, (bool)recompressFile.IsChecked);
 
             if (result.success==true)
