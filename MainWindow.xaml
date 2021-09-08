@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VideoTrimmer"
         mc:Ignorable="d"
-        Title="Video Trimmer" Height="256" Width="430" ResizeMode="NoResize">
-    <Grid Margin="10,10,10,10">
+        Title="Video Trimmer" Height="256" Width="430" ResizeMode="NoResize" Background="Black">
+    <Grid Margin="30,20,30,20">
+ 
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition />
@@ -17,19 +18,19 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0" Height="50" Orientation="Horizontal">
-            <Button Content="Select file" Width="75" Click="ButtonFileOpen_Click" Margin="0,10,0,16"/>
-            <Label Name="fileNameLabel" Content="No file selected" Width="329" Margin="0,10"/>
+            <Button Content="Select file" Width="75" Click="ButtonFileOpen_Click" Margin="0,10,0,16" Background="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Height="22" BorderBrush="{x:Null}"/>
+            <Label Name="fileNameLabel" Content="No file selected" Margin="10,10,0,10" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Left" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" AutomationProperties.IsOffscreenBehavior="Onscreen"/>
         </StackPanel>
         <StackPanel Grid.Column="0" Grid.Row="1" Height="50" Orientation="Horizontal">
-            <Label Content="Start:" VerticalAlignment="Center"/>
-            <TextBox Name="timecodeStart" Height="20" Text="00:00:00" Width="74" TextChanged="TextBox_TextChanged" TextAlignment="Center" MaxLength="8" MaxLines="1" VerticalAlignment="Center" FontSize="14" />
+            <Label Content="Start:" VerticalAlignment="Center" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium"/>
+            <TextBox x:Name="timecodeStart" Height="18" Text="00:00:00" Width="74" TextChanged="TextBox_TextChanged" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Margin="10,0,0,2" HorizontalAlignment="Left" BorderBrush="{x:Null}" />
         </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="1" Height="50" Orientation="Horizontal">
-            <Label Content="Duration:" VerticalAlignment="Center"/>
-            <TextBox Name="timecodeEnd"  Height="20" Text="00:00:00" Width="74" TextChanged="TextBox_TextChanged" TextAlignment="Center" MaxLength="8" MaxLines="1" VerticalAlignment="Center" FontSize="14"/>
+            <Label Content="Duration:" VerticalAlignment="Center" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium"/>
+            <TextBox Name="timecodeEnd"  Height="18" Text="00:00:00" Width="74" TextChanged="TextBox_TextChanged" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Left" BorderBrush="{x:Null}" Margin="10,0,0,2"/>
         </StackPanel>
-        <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="Trim video" VerticalAlignment="Top" Click="ButtonTrimVideo_Click" />
+        <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="Trim video" VerticalAlignment="Top" Click="ButtonTrimVideo_Click" Background="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Height="25" BorderBrush="{x:Null}" />
 
-        <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="42" Foreground="Black" FontSize="10" Cursor="Hand" Background="{x:Null}" BorderBrush="{x:Null}" Click="ButtonShowAbout_Click" />
+        <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="42" Foreground="#19FFFFFF" FontSize="10" Cursor="Hand" Background="{x:Null}" BorderBrush="{x:Null}" Click="ButtonShowAbout_Click" FontFamily="/VideoTrimmer;component/#Montserrat Medium" />
     </Grid>
 </Window>

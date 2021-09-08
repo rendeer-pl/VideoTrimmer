@@ -43,7 +43,15 @@ namespace VideoTrimmer
             {
                 case System.Windows.Forms.DialogResult.OK:
                     File = fileDialog.FileName;
-                    fileNameLabel.Content = "✅ " + File;
+                    String FileName = System.IO.Path.GetFileName(File);
+                    String FileRoot = System.IO.Path.GetPathRoot(File);
+
+                    String FileNameToDisplay = "";
+
+                    if (File.Length > 40) FileNameToDisplay = FileRoot + "...\\" + FileName;
+                    else FileNameToDisplay = File;
+
+                    fileNameLabel.Content = "✅ " + FileNameToDisplay;
                     fileNameLabel.ToolTip = File;
                     break;
                 case System.Windows.Forms.DialogResult.Cancel:
@@ -70,7 +78,7 @@ namespace VideoTrimmer
             String Start = timecodeStart.Text;
             String End = timecodeEnd.Text;
 
-            // TODO: Put together a console command
+            // Put together a console command
             String FilePath = System.IO.Path.GetDirectoryName(File);
             String FileName = System.IO.Path.GetFileNameWithoutExtension(File);
             String FileExtension = System.IO.Path.GetExtension(File);

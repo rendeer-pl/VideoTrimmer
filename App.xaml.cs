@@ -13,5 +13,9 @@ namespace VideoTrimmer
     /// </summary>
     public partial class App : Application
     {
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            Console.WriteLine(System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "/ffmpeg.exe"));
+        }
     }
 }
