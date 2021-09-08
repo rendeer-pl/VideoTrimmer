@@ -31,7 +31,7 @@ namespace VideoTrimmer
         public bool LoadFile(string File)
         {
             FilePath = File;
-            FileName = Path.GetFileName(FilePath);
+            FileName = Path.GetFileNameWithoutExtension(FilePath);
             FileRoot = Path.GetPathRoot(FilePath);
             FileExtension = Path.GetExtension(FilePath);
             FileDirectory = Path.GetDirectoryName(FilePath);
