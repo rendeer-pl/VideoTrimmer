@@ -67,8 +67,15 @@ namespace VideoTrimmer
         {
             if (IsProcessInProgress == true)
             {
-                if (ConfirmAbort()) e.Cancel = false;
-                else e.Cancel = true;
+                if (ConfirmAbort())
+                {
+                    e.Cancel = false;
+                    MainWindow.videoProcessing.StopProcess();
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
             }
         }
 
