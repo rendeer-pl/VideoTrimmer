@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Forms;
 
 namespace VideoTrimmer
 {
@@ -98,7 +99,7 @@ namespace VideoTrimmer
         // validates input into timecode text boxes
         private void Timecode_LostFocus(object sender, RoutedEventArgs e)
         {
-            TextBox senderTextBox = (TextBox)sender;
+            System.Windows.Forms.TextBox senderTextBox = (System.Windows.Forms.TextBox)sender;
 
             if (TimeSpan.TryParse(senderTextBox.Text, out _))
             {
@@ -131,7 +132,7 @@ namespace VideoTrimmer
             // TODO: Validate file
             if (!System.IO.File.Exists(File))
             {
-                MessageBox.Show("Source video has been moved or deleted!");
+                System.Windows.MessageBox.Show("Source video has been moved or deleted!");
                 ResetFilePicker();
                 ChangeFieldsStatus(false);
                 return;
@@ -182,7 +183,16 @@ namespace VideoTrimmer
             };
             process.StartInfo = startInfo;
             process.Start();
-            MessageBox.Show(ConsoleCommand);
+            // MessageBox.Show(ConsoleCommand);
+
+            // Initializes the variables to pass to the MessageBox.Show method.
+            string caption = "Everything should be ok";
+            string message = "Video trimmed using the following command:\n\r\n\r" + ConsoleCommand.Substring(3);
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
+
+            // Displays the MessageBox.
+            _ = System.Windows.Forms.MessageBox.Show(message, caption, buttons, System.Windows.Forms.MessageBoxIcon.Information);
+
             Process.Start("explorer.exe", FilePath);
         }
 
@@ -196,8 +206,8 @@ namespace VideoTrimmer
             string Text;
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
-            Text = "Rendeer " + version.Major + "." + version.Minor + ".190510";
-            MessageBox.Show(Text);
+            Text = "Rendeer " + version.Major + "." + version.Minor + ".190512";
+            System.Windows.Forms.MessageBox.Show(Text);
         }
 
     }

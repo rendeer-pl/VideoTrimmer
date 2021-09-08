@@ -17,7 +17,7 @@ namespace VideoTrimmer
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-
+            /* disabled until I figure it out
             try
             {
                 Version version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -31,7 +31,7 @@ namespace VideoTrimmer
                 Console.WriteLine("Update server didn't respond.");
             }
 
-
+            */
 
             if (System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "/ffmpeg.exe"))
             {
