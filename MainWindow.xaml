@@ -23,11 +23,11 @@
         </StackPanel>
         <StackPanel Grid.Column="0" Grid.Row="1" Height="50" Orientation="Horizontal" VerticalAlignment="Top">
             <Label Content="Start:" VerticalAlignment="Center" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium"/>
-            <TextBox x:Name="timecodeStart" Height="18" Text="00:00:00" Width="74" TextChanged="TextBox_TextChanged" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Margin="10,0,0,2" HorizontalAlignment="Left" BorderBrush="{x:Null}" />
+            <TextBox x:Name="timecodeStart" Height="18" Text="00:00:00" Width="74" LostFocus="Timecode_LostFocus" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Margin="10,0,0,2" HorizontalAlignment="Left" BorderBrush="{x:Null}" />
         </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="1" Height="50" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
             <Label Content="End:" VerticalAlignment="Center" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium"/>
-            <TextBox Name="timecodeEnd"  Height="18" Text="00:00:00" Width="74" TextChanged="TextBox_TextChanged" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Left" BorderBrush="{x:Null}" Margin="10,0,0,2"/>
+            <TextBox Name="timecodeEnd"  Height="18" Text="00:00:00" Width="74"  LostFocus="Timecode_LostFocus" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Left" BorderBrush="{x:Null}" Margin="10,0,0,2"/>
         </StackPanel>
         <Button Name="trimVideoButton" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="TRIM VIDEO" VerticalAlignment="Top" Click="ButtonTrimVideo_Click" Background="White" FontFamily="/VideoTrimmer;component/#Montserrat" Height="25" BorderBrush="{x:Null}" IsEnabled="False" />
 

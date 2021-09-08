@@ -40,9 +40,11 @@ namespace VideoTrimmer
 
         private void ButtonFileOpen_Click(object sender, RoutedEventArgs e)
         {
-            var fileDialog = new System.Windows.Forms.OpenFileDialog();
-            fileDialog.Filter = "videos (*.mp4)|*.mp4";
-            fileDialog.RestoreDirectory = true;
+            var fileDialog = new System.Windows.Forms.OpenFileDialog
+            {
+                Filter = "videos (*.mp4)|*.mp4",
+                RestoreDirectory = true
+            };
             var result = fileDialog.ShowDialog();
 
             switch (result)
@@ -77,9 +79,36 @@ namespace VideoTrimmer
             }
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
 
+        // validates input into timecode text boxes
+        private void Timecode_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox senderTextBox = (TextBox)sender;
+
+            if (TimeSpan.TryParse(senderTextBox.Text, out _))
+            {
+                if (TimeSpan.Parse(senderTextBox.Text) <= FileDuration)
+                {
+                    if (timecodeStart == null | timecodeEnd == null)
+                    {
+                        // one of the fields has not been initialized, do nothing
+                        return;
+                    }
+                    else
+                    {
+                        if (TimeSpan.Parse(timecodeStart.Text) < TimeSpan.Parse(timecodeEnd.Text))
+                        {
+                            senderTextBox.Text = TimeSpan.Parse(senderTextBox.Text).ToString();
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // if everything failed -- undo editing field
+            _ = Dispatcher.BeginInvoke(new Action(() => senderTextBox.Undo()));
+
+            return;
         }
 
         private void ButtonTrimVideo_Click(object sender, RoutedEventArgs e)
@@ -125,10 +154,12 @@ namespace VideoTrimmer
 
             // Execute console command
             System.Diagnostics.Process process = new System.Diagnostics.Process();
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-            startInfo.FileName = "cmd.exe";
-            startInfo.Arguments = ConsoleCommand;
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                FileName = "cmd.exe",
+                Arguments = ConsoleCommand
+            };
             process.StartInfo = startInfo;
             process.Start();
             MessageBox.Show(ConsoleCommand);
@@ -148,5 +179,6 @@ namespace VideoTrimmer
             Text = "Rendeer " + version.Major + "." + version.Minor + ".190510";
             MessageBox.Show(Text);
         }
+
     }
 }
