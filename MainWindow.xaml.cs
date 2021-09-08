@@ -81,11 +81,17 @@ namespace VideoTrimmer
                     break;
                 case System.Windows.Forms.DialogResult.Cancel:
                 default:
-                    fileNameLabel.Content = "No file selected";
-                    fileNameLabel.ToolTip = "No file selected";
-                    File = null;
+                    ResetFilePicker();
                     break;
             }
+        }
+
+        private void ResetFilePicker()
+        {
+            fileNameLabel.Content = "No file selected";
+            fileNameLabel.ToolTip = "No file selected";
+            File = null;
+            return;
         }
 
 
@@ -123,8 +129,13 @@ namespace VideoTrimmer
         private void ButtonTrimVideo_Click(object sender, RoutedEventArgs e)
         {
             // TODO: Validate file
-            String File = fileNameLabel.ToolTip.ToString();
-
+            if (!System.IO.File.Exists(File))
+            {
+                MessageBox.Show("Source video has been moved or deleted!");
+                ResetFilePicker();
+                ChangeFieldsStatus(false);
+                return;
+            }
 
             // TODO: Validate timecodes
             String Start = timecodeStart.Text;
