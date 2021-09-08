@@ -127,18 +127,24 @@ namespace VideoTrimmer
                 }
                 else
                 {
-
-                    if (outLine.Data.Substring(0,6) == "frame=")
+                    try
                     {
-                        float newCurrentFrame;
-                        float.TryParse(outLine.Data.Substring(6), out newCurrentFrame);
-                        if (newCurrentFrame > 0) CurrentFrame = newCurrentFrame;
-                        int progressValue = Convert.ToInt32(CurrentFrame / ((End-Start).TotalSeconds * FileFramerate) * 100);
+                        if (outLine.Data.Substring(0, 6) == "frame=")
+                        {
+                            float newCurrentFrame;
+                            float.TryParse(outLine.Data.Substring(6), out newCurrentFrame);
+                            if (newCurrentFrame > 0) CurrentFrame = newCurrentFrame;
+                            int progressValue = Convert.ToInt32(CurrentFrame / ((End - Start).TotalSeconds * FileFramerate) * 100);
 
-                        progressWindow.UpdateProgress(progressValue, false);
-                                                
-                        Console.WriteLine(progressValue + "%");
+                            progressWindow.UpdateProgress(progressValue, false);
 
+                            Console.WriteLine(progressValue + "%");
+
+                        }
+                    } catch (Exception)
+                    {
+                        Console.WriteLine("Unrecognized process output: " + outLine.Data);
+                        StopProcess();
                     }
                 }
 #if DEBUG
