@@ -1,4 +1,5 @@
-﻿using System;
+﻿using WMPLib;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -25,11 +26,16 @@ namespace VideoTrimmer
     {
 
         String File = null;
+        TimeSpan FileDuration;
 
 
         public MainWindow()
         {
             InitializeComponent();
+
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + ".190510";
+            
         }
 
         private void ButtonFileOpen_Click(object sender, RoutedEventArgs e)
@@ -43,6 +49,14 @@ namespace VideoTrimmer
             {
                 case System.Windows.Forms.DialogResult.OK:
                     File = fileDialog.FileName;
+
+                    var player = new WindowsMediaPlayer();
+                    var clip = player.newMedia(File);
+                    FileDuration = TimeSpan.FromSeconds(clip.duration);
+                    timecodeEnd.Text = FileDuration.ToString();
+
+
+                    trimVideoButton.IsEnabled = true;
                     String FileName = System.IO.Path.GetFileName(File);
                     String FileRoot = System.IO.Path.GetPathRoot(File);
 
@@ -51,7 +65,7 @@ namespace VideoTrimmer
                     if (File.Length > 40) FileNameToDisplay = FileRoot + "...\\" + FileName;
                     else FileNameToDisplay = File;
 
-                    fileNameLabel.Content = "✅ " + FileNameToDisplay;
+                    fileNameLabel.Content = "✔️ " + FileNameToDisplay;
                     fileNameLabel.ToolTip = File;
                     break;
                 case System.Windows.Forms.DialogResult.Cancel:
@@ -76,7 +90,7 @@ namespace VideoTrimmer
 
             // TODO: Validate timecodes
             String Start = timecodeStart.Text;
-            String End = timecodeEnd.Text;
+            TimeSpan Duration = TimeSpan.Parse(timecodeEnd.Text) - TimeSpan.Parse(timecodeStart.Text);
 
             // Put together a console command
             String FilePath = System.IO.Path.GetDirectoryName(File);
@@ -105,7 +119,7 @@ namespace VideoTrimmer
             String NewFileName = NewPartialPath + UniqueFilenameIndex + FileExtension;
 
 
-            String ConsoleCommand = "/C ffmpeg -ss " + Start + " -i \"" + File + "\" -to " + End + " -c copy \"" + NewFileName + "\"";
+            String ConsoleCommand = "/C ffmpeg -ss " + Start + " -i \"" + File + "\" -to " + Duration + " -c copy \"" + NewFileName + "\"";
 
             
 

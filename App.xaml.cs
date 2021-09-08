@@ -15,7 +15,20 @@ namespace VideoTrimmer
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            Console.WriteLine(System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "/ffmpeg.exe"));
+            if (System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "/ffmpeg.exe"))
+            {
+                Console.WriteLine("FFMPEG has been found");
+                MainWindow mainWindow = new MainWindow();
+                mainWindow.Show();
+
+            } else
+            {
+                NoFFMPEGWindow noFFMPEGWindow = new NoFFMPEGWindow();
+                noFFMPEGWindow.Show();
+            }
+
+
+
         }
     }
 }
