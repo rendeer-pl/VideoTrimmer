@@ -141,7 +141,9 @@ namespace VideoTrimmer
 
                     }
                 }
-                //Console.WriteLine(DateTime.Now + " FFMPEG Output: " + outLine.Data);
+#if DEBUG
+                Console.WriteLine(DateTime.Now + " FFMPEG Output: " + outLine.Data);
+#endif
             }
         }
 
@@ -214,7 +216,7 @@ namespace VideoTrimmer
 
 
             // forge the command
-            ConsoleCommand = "/C " + Globals.appOriginPath + "/ffmpeg -ss " + Start.ToString() + " -i \"" + FilePath + "\" -t " + Duration.ToString() + " ";
+            ConsoleCommand = "/c \"\"" + Globals.appOriginPath + "\\ffmpeg.exe\" -ss " + Start.ToString() + " -i \"" + FilePath + "\" -t " + Duration.ToString() + " ";
 
             // are we recompressing the video?
             if (ShouldRecompress == false) ConsoleCommand += "-c copy ";
@@ -224,7 +226,11 @@ namespace VideoTrimmer
             // are we removing audio?
             if (ShouldRemoveAudio == true) ConsoleCommand += "-an ";
 
-            ConsoleCommand += "\"" + NewFileName + "\" -progress pipe:1";
+            ConsoleCommand += "\"" + NewFileName + "\" -progress pipe:1\"";
+
+#if DEBUG
+            Console.WriteLine(ConsoleCommand);
+#endif
             // CONSOLE COMMAND END
 
 
