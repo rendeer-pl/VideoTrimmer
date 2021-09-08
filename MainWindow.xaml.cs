@@ -24,7 +24,7 @@ namespace VideoTrimmer
 
             // Updating the "About" footer
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".190520";
+            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".190521";
         }
 
         // Used to enable or disable editable fields
@@ -35,13 +35,27 @@ namespace VideoTrimmer
             timecodeEnd.IsEnabled = NewLockStatus;
             removeAudio.IsEnabled = NewLockStatus;
             recompressFile.IsEnabled = NewLockStatus;
-            recompressOptionsGroup.IsEnabled = NewLockStatus;
-            reduceFileSize.IsEnabled = NewLockStatus;
-            reduceVideoSize.IsEnabled = NewLockStatus;
+
+            // if the form is unlocking then enable the recompression options depending on the checkbox value. If the form is locking, then just disable everything.
+            if (NewLockStatus == true) RecompressFile_ValueChanged(null, null);
+            else
+            {
+                recompressOptionsGroup.IsEnabled = NewLockStatus;
+                reduceFileSize.IsEnabled = NewLockStatus;
+                reduceVideoSize.IsEnabled = NewLockStatus;
+            }
 
             return;
         }
 
+        // Fired whenever user checks or unchecks the "Recompess file" checkbox
+        private void RecompressFile_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            bool NewLockStatus = (bool)recompressFile.IsChecked;
+            recompressOptionsGroup.IsEnabled = NewLockStatus;
+            reduceFileSize.IsEnabled = NewLockStatus;
+            reduceVideoSize.IsEnabled = NewLockStatus;
+        }
 
         // Reset window to state without file selected
         private void ResetFilePicker()
@@ -198,12 +212,15 @@ namespace VideoTrimmer
 
 
             // forge the command
-            String ConsoleCommand = "/C ffmpeg -ss " + Start + " -i \"" + File + "\" -to " + Duration + " -c copy ";
+            String ConsoleCommand = "/C ffmpeg -ss " + Start + " -i \"" + File + "\" -to " + Duration + " ";
 
-            // remove audio
-            if (removeAudio.IsChecked == true) ConsoleCommand = ConsoleCommand + "-an ";
+            // are we recompressing the video?
+            if (recompressFile.IsChecked == false) ConsoleCommand += "-c copy ";
 
-            ConsoleCommand = ConsoleCommand+"\"" + NewFileName + "\"";
+            // are we removing audio?
+            if (removeAudio.IsChecked == true) ConsoleCommand += "-an ";
+
+            ConsoleCommand += "\"" + NewFileName + "\"";
             // CONSOLE COMMAND END
 
 
@@ -260,8 +277,6 @@ namespace VideoTrimmer
                 // TODO: Replace with a custom window
                 _ = System.Windows.Forms.MessageBox.Show(message, caption, MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
             }
-
-
         }
 
         // Displays "About" window

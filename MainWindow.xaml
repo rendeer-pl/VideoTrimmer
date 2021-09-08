@@ -33,13 +33,13 @@
             <Label Content="End:" VerticalAlignment="Center" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium"/>
             <TextBox Name="timecodeEnd" IsEnabled="False" Height="20" Text="00:00:00" Width="92"  LostFocus="Timecode_LostFocus" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Left" BorderBrush="{x:Null}" Margin="10,0,-1,0" VerticalAlignment="Center"/>
         </StackPanel>
-        <Separator Grid.ColumnSpan="2" Height="2" Margin="0,5,0,0" Grid.Row="2" VerticalAlignment="Top"/>
+        <Separator Grid.ColumnSpan="2" Height="2" Margin="0,6,0,0" Grid.Row="2" VerticalAlignment="Top"/>
         <!-- options -->
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2" VerticalAlignment="Center">
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2" VerticalAlignment="Center" Margin="0,5,0,0">
             <CheckBox Name="removeAudio" Content="Remove audio" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="The output video will not contain any audio streams"/>
-            <CheckBox Name="recompressFile" Content="Recompress file" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="Trimming will take significantly more time, but will offer greater precision while trimming"/>
+            <CheckBox Name="recompressFile" Content="Recompress file" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="Trimming will take significantly more time, but will offer greater precision while trimming" Checked="RecompressFile_ValueChanged" Unchecked="RecompressFile_ValueChanged" />
         </StackPanel>
-        <GroupBox Name="recompressOptionsGroup" Header="Recompression options" Height="76" Margin="0,0,0,0" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Grid.ColumnSpan="1" Foreground="White" IsEnabled="False" FontFamily="/VideoTrimmer;component/#Montserrat Medium" BorderThickness="1" UseLayoutRounding="False">
+        <GroupBox Visibility="Hidden" Name="recompressOptionsGroup" Header="Recompression options" Height="76" Margin="0,0,0,0" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Grid.ColumnSpan="1" Foreground="White" IsEnabled="False" FontFamily="/VideoTrimmer;component/#Montserrat Medium" BorderThickness="1" UseLayoutRounding="False">
                 <GroupBox.BorderBrush>
                     <SolidColorBrush Color="White"/>
                 </GroupBox.BorderBrush>
