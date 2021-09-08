@@ -39,11 +39,17 @@ namespace VideoTrimmer
             FileExtension = Path.GetExtension(FilePath);
             FileDirectory = Path.GetDirectoryName(FilePath);
 
-            // Get video duration
-            var clip = Player.newMedia(FilePath);
-            FileDuration = TimeSpan.FromSeconds(clip.duration);
+            try
+            {
+                // Get video duration
+                IWMPMedia clip = Player.newMedia(FilePath);
+                FileDuration = TimeSpan.FromSeconds(clip.duration);
+                return true;
+            } catch
+            {
+                return false;
+            }
 
-            return false;
         }
 
         internal void RegisterProgressWindow(ProgressWindow newProgressWindow) => progressWindow = newProgressWindow;
