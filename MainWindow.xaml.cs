@@ -193,7 +193,8 @@ namespace VideoTrimmer
             // Displays the MessageBox.
             _ = System.Windows.Forms.MessageBox.Show(message, caption, buttons, System.Windows.Forms.MessageBoxIcon.Information);
 
-            Process.Start("explorer.exe", FilePath);
+            string argument = "/select, \"" + NewFileName + "\"";
+            Process.Start("explorer.exe", argument);
         }
 
         private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
