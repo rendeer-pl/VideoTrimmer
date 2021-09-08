@@ -88,7 +88,7 @@ namespace VideoTrimmer
 
             // Get video duration and paste it into "End" timecode TextBox
             timecodeStart.Text = "00:00:00";
-            timecodeEnd.Text = videoProcessing.GetDuration().ToString();
+            timecodeEnd.Text = videoProcessing.GetDuration().ToString(@"hh\:mm\:ss");
 
             // If file path is long, trim it
             String FileNameToDisplay = "";
