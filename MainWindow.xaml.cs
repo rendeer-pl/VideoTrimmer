@@ -23,7 +23,7 @@ namespace VideoTrimmer
 
             // Updating the "About" footer
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".200108";
+            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".200209";
         }
 
         // Used to enable or disable editable fields
@@ -39,9 +39,7 @@ namespace VideoTrimmer
             if (NewLockStatus == true) RecompressFile_ValueChanged(null, null);
             else
             {
-                recompressOptionsGroup.IsEnabled = NewLockStatus;
-                reduceFileSize.IsEnabled = NewLockStatus;
-                reduceVideoSize.IsEnabled = NewLockStatus;
+                DesiredFileSize.IsEnabled = NewLockStatus;
             }
 
             return;
@@ -51,9 +49,7 @@ namespace VideoTrimmer
         private void RecompressFile_ValueChanged(object sender, RoutedEventArgs e)
         {
             bool NewLockStatus = (bool)recompressFile.IsChecked;
-            recompressOptionsGroup.IsEnabled = NewLockStatus;
-            reduceFileSize.IsEnabled = NewLockStatus;
-            reduceVideoSize.IsEnabled = NewLockStatus;
+            DesiredFileSize.IsEnabled = NewLockStatus;
         }
 
         // Reset window to state without file selected
@@ -163,6 +159,39 @@ namespace VideoTrimmer
         }
 
 
+        // validates values in the DesiredFileSize text box
+        private void DesiredFileSize_LostFocus(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.TextBox senderTextBox = (System.Windows.Controls.TextBox)sender;
+
+            int newIntValue;
+
+            // check if a value is a valid int
+            if (int.TryParse(senderTextBox.Text.Split(',')[0], out newIntValue))
+            {
+                // accept the value, but parse it to make sure the leading zeros are not there
+                senderTextBox.Text = newIntValue.ToString();
+                return;
+            }
+            if (int.TryParse(senderTextBox.Text.Split('.')[0], out newIntValue))
+            {
+                // accept the value, but parse it to make sure the leading zeros are not there
+                senderTextBox.Text = newIntValue.ToString();
+                return;
+            }
+
+            if (senderTextBox.Text == "")
+            {
+                senderTextBox.Text = "0";
+                return;
+            }
+
+            // if everything failed -- undo editing field
+            _ = Dispatcher.BeginInvoke(new Action(() => senderTextBox.Undo()));
+
+            return;
+        }
+
         // main logic - "TRIM VIDEO" button click
         private void ButtonTrimVideo_Click(object sender, RoutedEventArgs e)
         {
@@ -182,8 +211,11 @@ namespace VideoTrimmer
             TimeSpan Start = TimeSpan.Parse(timecodeStart.Text);
             TimeSpan End = TimeSpan.Parse(timecodeEnd.Text);
 
+            int DesiredFileSizeInt;
+            Int32.TryParse(DesiredFileSize.Text, out DesiredFileSizeInt);
+
             // set process settings
-            videoProcessing.SetParameters(Start, End, (bool)removeAudio.IsChecked, (bool)recompressFile.IsChecked);
+            videoProcessing.SetParameters(Start, End, (bool)removeAudio.IsChecked, (bool)recompressFile.IsChecked, DesiredFileSizeInt);
 
             // open the progress window that executes the main process
             ProgressWindow progressWindow = new ProgressWindow();

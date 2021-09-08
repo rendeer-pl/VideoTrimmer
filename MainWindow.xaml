@@ -39,15 +39,11 @@
             <CheckBox Name="removeAudio" Content="Remove audio" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="The output video will not contain any audio streams"/>
             <CheckBox Name="recompressFile" Content="Recompress file" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="Trimming will take significantly more time, but will offer greater precision while trimming" Checked="RecompressFile_ValueChanged" Unchecked="RecompressFile_ValueChanged" />
         </StackPanel>
-        <GroupBox Visibility="Hidden" Name="recompressOptionsGroup" Header="Recompression options" Height="76" Margin="0,0,0,0" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Grid.ColumnSpan="1" Foreground="White" IsEnabled="False" FontFamily="/VideoTrimmer;component/#Montserrat Medium" BorderThickness="1" UseLayoutRounding="False">
-                <GroupBox.BorderBrush>
-                    <SolidColorBrush Color="White"/>
-                </GroupBox.BorderBrush>
-                <StackPanel>
-                    <CheckBox Name="reduceFileSize" Content="Reduce bitrate" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center" Margin="5,5" ToolTip="Reduces video bitrate" />
-                    <CheckBox Name="reduceVideoSize" Content="Reduce video size" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center" Margin="5,5" ToolTip="Sets new resolution at approximately 960x540. Great for attaching to bug reports." />
-                </StackPanel>
-            </GroupBox>
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="2" VerticalAlignment="Center" Orientation="Horizontal" Margin="0,5,0,0">
+            <Label Content="Max file size (in MB):" VerticalAlignment="Center" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium"/>
+            <TextBox Name="DesiredFileSize" IsEnabled="False" Height="20" Text="0" Width="45" LostFocus="DesiredFileSize_LostFocus"  TextAlignment="Right" MaxLength="4" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Right" BorderBrush="{x:Null}" Margin="0,0,0,0" VerticalAlignment="Center"/>
+        </StackPanel>
+
 
 
 

@@ -27,6 +27,7 @@ namespace VideoTrimmer
         private TimeSpan End;
         private bool ShouldRemoveAudio;
         private bool ShouldRecompress;
+        private int DesiredFileSize;
         private ProgressWindow progressWindow;
 
 
@@ -135,8 +136,7 @@ namespace VideoTrimmer
                         int progressValue = Convert.ToInt32(CurrentFrame / ((End-Start).TotalSeconds * FileFramerate) * 100);
 
                         progressWindow.UpdateProgress(progressValue, false);
-                        
-                        
+                                                
                         Console.WriteLine(progressValue + "%");
 
                     }
@@ -164,12 +164,13 @@ namespace VideoTrimmer
             }
         }
 
-        public void SetParameters(TimeSpan NewStart, TimeSpan NewEnd, bool NewShouldRemoveAudio, bool NewShouldRecompress)
+        public void SetParameters(TimeSpan NewStart, TimeSpan NewEnd, bool NewShouldRemoveAudio, bool NewShouldRecompress, int NewDesiredFileSize)
         {
             Start = NewStart;
             End = NewEnd;
             ShouldRemoveAudio = NewShouldRemoveAudio;
             ShouldRecompress = NewShouldRecompress;
+            DesiredFileSize = NewDesiredFileSize;
         }
 
         public void Execute()
@@ -198,12 +199,27 @@ namespace VideoTrimmer
             }
             NewFileName = NewPartialPath + UniqueFilenameIndex + FileExtension;
 
+            double bitrate = 0.0;
+            // is the DesiredFileSize specified?
+            if (DesiredFileSize > 0)
+            {
+                // divide the desired size in Kb by the number of seconds
+                bitrate = DesiredFileSize * 8192 / (End - Start).TotalSeconds;
+
+                // is the remainder smaller than 300 kbps? use 300 kbps
+                if (bitrate < 300) bitrate = 300;
+
+                Console.WriteLine("Calculated max bitrate for DesiredFileSize: " + bitrate + "k");
+            }
+
 
             // forge the command
             ConsoleCommand = "/C ffmpeg -ss " + Start.ToString() + " -i \"" + FilePath + "\" -t " + Duration.ToString() + " ";
 
             // are we recompressing the video?
             if (ShouldRecompress == false) ConsoleCommand += "-c copy ";
+            // if we are recompressing, is there a DesiredFileSize and a precalculated bitrate?
+            else if ((DesiredFileSize > 0) && (bitrate > 0)) ConsoleCommand += "-crf 23 -maxrate " + bitrate + "k -bufsize " + bitrate + "k ";
 
             // are we removing audio?
             if (ShouldRemoveAudio == true) ConsoleCommand += "-an ";
