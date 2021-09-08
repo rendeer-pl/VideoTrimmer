@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Forms;
@@ -28,6 +27,21 @@ namespace VideoTrimmer
 
             // Updating the "About" footer
             aboutFooter.Content = Globals.company + " " + Globals.customVersion;
+
+            // Checking if there is a file path passed through command line arguments (e.g. "Open with...")
+            string[] arguments = Environment.GetCommandLineArgs();
+            if (arguments.Length>1) {
+                // check if it has a compatible extension
+                if (videoProcessing.CheckIfFileIsAccepted(arguments[1]))
+                {
+                    Console.WriteLine("File passed through arguments has been recognized!");
+                    OpenSelectedFile(arguments[1]);
+                }
+                else
+                {
+                    Console.WriteLine("File passed through arguments has not been recognized.");
+                }
+            }
         }
 
         // Used to enable or disable editable fields

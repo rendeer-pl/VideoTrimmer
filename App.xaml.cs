@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Net;
 using System.Windows;
 
 namespace VideoTrimmer
@@ -11,12 +13,12 @@ namespace VideoTrimmer
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             // Checking for updates
-            /* 
+            /*
             try
             {
-                Version version = Assembly.GetExecutingAssembly().GetName().Version;
+                string version = Globals.customVersion;
                 WebClient client = new WebClient();
-                string newestVersion = client.DownloadString("https://rendeer.pl/VideoTrimmer/updates.php?v="+ version.Major + "." + version.Minor + "." + version.Build);
+                string newestVersion = client.DownloadString("https://rendeer.pl/VideoTrimmer/updates.php?v=" + version);
                 Console.WriteLine("Newest available version: " + newestVersion);
             }
             catch
@@ -27,7 +29,7 @@ namespace VideoTrimmer
             */
 
             // Check if ffmpeg.exe is present in folder
-            if (System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "/ffmpeg.exe"))
+            if (System.IO.File.Exists(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/ffmpeg.exe"))
             {
                 Console.WriteLine("FFmpeg has been found");
                 MainWindow mainWindow = new MainWindow();
