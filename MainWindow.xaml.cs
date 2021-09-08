@@ -38,6 +38,15 @@ namespace VideoTrimmer
    
         }
 
+        private void ChangeFieldsStatus(bool NewLockStatus)
+        {
+            trimVideoButton.IsEnabled = NewLockStatus;
+            timecodeStart.IsEnabled = NewLockStatus;
+            timecodeEnd.IsEnabled = NewLockStatus;
+
+            return;
+        }
+
         private void ButtonFileOpen_Click(object sender, RoutedEventArgs e)
         {
             var fileDialog = new System.Windows.Forms.OpenFileDialog
@@ -57,8 +66,8 @@ namespace VideoTrimmer
                     FileDuration = TimeSpan.FromSeconds(clip.duration);
                     timecodeEnd.Text = FileDuration.ToString();
 
+                    ChangeFieldsStatus(true);
 
-                    trimVideoButton.IsEnabled = true;
                     String FileName = System.IO.Path.GetFileName(File);
                     String FileRoot = System.IO.Path.GetPathRoot(File);
 
