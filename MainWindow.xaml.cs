@@ -16,7 +16,7 @@ namespace VideoTrimmer
     {
 
         public VideoProcessing videoProcessing = new VideoProcessing();
-        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -70,14 +70,14 @@ namespace VideoTrimmer
         {
             Console.WriteLine("Opening file: " + FileToOpen);
 
-            if (videoProcessing.LoadFile(FileToOpen)==true)
+            if (videoProcessing.LoadFile(FileToOpen) == true)
             {
                 Console.WriteLine("File opened successfully");
             } else
             {
                 Console.WriteLine("Couldn't open file");
             }
-            
+
 
             // Unlock editable fields
             SetFieldsLockStatus(true);
@@ -101,9 +101,9 @@ namespace VideoTrimmer
         // Called when clicked on the "Select File" button
         private void ButtonFileOpen_Click(object sender, RoutedEventArgs e)
         {
-            string FilterParams = "Video files ("+ videoProcessing.GetSupportedVideoFormats() + ")|"+videoProcessing.GetSupportedVideoFormats();
+            string FilterParams = "Video files (" + videoProcessing.GetSupportedVideoFormats() + ")|" + videoProcessing.GetSupportedVideoFormats();
             FilterParams += "|Audio files (" + videoProcessing.GetSupportedAudioFormats() + ")|" + videoProcessing.GetSupportedAudioFormats();
-            
+
             var fileDialog = new OpenFileDialog
             {
                 Filter = FilterParams,
@@ -128,13 +128,13 @@ namespace VideoTrimmer
             System.Windows.Controls.TextBox senderTextBox = (System.Windows.Controls.TextBox)sender;
 
             // check if a value is a valid TimeSpan
-            if (TimeSpan.TryParse(senderTextBox.Text, out _)) 
+            if (TimeSpan.TryParse(senderTextBox.Text, out _))
             {
                 // check if the value is shorter or equal to FileDuration
-                if (TimeSpan.Parse(senderTextBox.Text) <= videoProcessing.GetDuration()) 
+                if (TimeSpan.Parse(senderTextBox.Text) <= videoProcessing.GetDuration())
                 {
                     // make sure that none of the TextBoxes is null
-                    if (timecodeStart == null | timecodeEnd == null) 
+                    if (timecodeStart == null | timecodeEnd == null)
                     {
                         // one of the fields has not been initialized, do nothing
                         return;
@@ -142,7 +142,7 @@ namespace VideoTrimmer
                     else
                     {
                         // make sure the starting timecode is smaller than the ending timecode
-                        if (TimeSpan.Parse(timecodeStart.Text) < TimeSpan.Parse(timecodeEnd.Text)) 
+                        if (TimeSpan.Parse(timecodeStart.Text) < TimeSpan.Parse(timecodeEnd.Text))
                         {
                             // accept the value, but parse it to make sure the leading zeros are there
                             senderTextBox.Text = TimeSpan.Parse(senderTextBox.Text).ToString();
@@ -252,11 +252,11 @@ namespace VideoTrimmer
                     Console.WriteLine("Dragged file recognized!");
                     Background = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0x77, 0));
                 }
-                else
-                {
-                    Console.WriteLine("Dragged file not recognized.");
-                    Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x88, 0, 0));
-                }
+            }
+            else
+            {
+                Console.WriteLine("Dragged file not recognized.");
+                Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x88, 0, 0));
             }
         }
 
@@ -268,7 +268,10 @@ namespace VideoTrimmer
             
             // restore default background
             Background = Brushes.Black;
-                        
+
+            // in case the dropped object is not a file
+            if (files == null) return;
+
             // get the first file, ignore the rest
             string droppedFile = files[0];
             Console.WriteLine(Path.GetExtension(droppedFile));
