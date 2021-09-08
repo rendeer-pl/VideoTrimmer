@@ -18,11 +18,11 @@ namespace VideoTrimmer
         private String NewFileName;
         private float CurrentFrame;
         private String ConsoleCommand;
-        private WindowsMediaPlayer Player = new WindowsMediaPlayer();
+        private readonly WindowsMediaPlayer Player = new WindowsMediaPlayer();
         Process process = new Process();
         private ResultsWindowContents result;
-        private string[] SupportedVideoFormats = new string[] { ".mp4", ".mpg", ".mpeg", ".wmv", ".avi", ".mov", ".mts", ".m2ts", ".vob" };
-        private string[] SupportedAudioFormats = new string[] { ".mp3", ".wav", ".aiff" };
+        private readonly string[] SupportedVideoFormats = new string[] { ".mp4", ".mpg", ".mpeg", ".wmv", ".avi", ".mov", ".mts", ".m2ts", ".vob" };
+        private readonly string[] SupportedAudioFormats = new string[] { ".mp3", ".wav", ".aiff" };
         private TimeSpan Start;
         private TimeSpan End;
         private bool ShouldRemoveAudio;
