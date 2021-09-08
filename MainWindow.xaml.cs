@@ -1,6 +1,4 @@
-﻿using WMPLib;
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
@@ -21,9 +19,15 @@ namespace VideoTrimmer
         {
             InitializeComponent();
 
+            // Updating the window title bar
+            string windowTitle = Globals.appTitle;
+#if DEBUG
+            windowTitle += " DEBUG";
+#endif
+            this.Title = windowTitle;
+
             // Updating the "About" footer
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".200216";
+            aboutFooter.Content = Globals.company + " " + Globals.customVersion;
         }
 
         // Used to enable or disable editable fields

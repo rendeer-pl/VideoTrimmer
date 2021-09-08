@@ -1,18 +1,17 @@
 ﻿using System.Reflection;
 using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("VideoTrimmer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle(Globals.appTitle)]
+[assembly: AssemblyDescription(Globals.description)]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Rendeer")]
-[assembly: AssemblyProduct("VideoTrimmer")]
-[assembly: AssemblyCopyright("Copyright © Rendeer 2020")]
+[assembly: AssemblyCompany(Globals.company)]
+[assembly: AssemblyProduct(Globals.appTitle)]
+[assembly: AssemblyCopyright(Globals.copyright)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,7 +50,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.2.6.0")]
-[assembly: AssemblyFileVersion("0.2.6.0")]
+[assembly: AssemblyVersion(Globals.assemblyVersion)]
+[assembly: AssemblyFileVersion(Globals.assemblyVersion)]
 [assembly: NeutralResourcesLanguage("en")]
-
