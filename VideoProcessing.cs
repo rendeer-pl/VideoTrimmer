@@ -201,12 +201,12 @@ namespace VideoTrimmer
             }
             NewFileName = NewPartialPath + UniqueFilenameIndex + FileExtension;
 
-            double bitrate = 0.0;
+            int bitrate = 0;
             // is the DesiredFileSize specified?
             if (DesiredFileSize > 0)
             {
                 // divide the desired size in Kb by the number of seconds
-                bitrate = DesiredFileSize * 8192 / (End - Start).TotalSeconds;
+                bitrate = Convert.ToInt32(DesiredFileSize * 8192 / (End - Start).TotalSeconds);
 
                 // is the remainder smaller than 300 kbps? use 300 kbps
                 if (bitrate < 300) bitrate = 300;
