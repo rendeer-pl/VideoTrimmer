@@ -113,12 +113,15 @@ namespace VideoTrimmer
             public String caption;
             public String message;
             public String newFileName;
-            public ResultsWindowContents(bool p1, String p2, String p3, String p4)
+            public String command;
+
+            public ResultsWindowContents(bool p1, String p2, String p3, String p4, String p5)
             {
                 success = p1;
                 caption = p2;
                 message = p3;
                 newFileName = p4;
+                command = p5;
             }
         }
 
@@ -196,16 +199,18 @@ namespace VideoTrimmer
             if (process.ExitCode == 0)
             {
                 result.success = true;
-                result.caption = "Everything should be ok";
-                result.message = "Video trimmed using the following command:\n\r\n\r" + ConsoleCommand.Substring(3);
+                result.caption = "Trimming complete";
+                result.message = "";
                 result.newFileName = NewFileName;
+                result.command = ConsoleCommand.Substring(3);
             }
             else
             {
                 // Command failed
                 result.success = false;
                 result.caption = "Something went wrong";
-                result.message = "Command that was used:\n\r\n\r" + ConsoleCommand.Substring(3);
+                result.message = "";
+                result.command = ConsoleCommand.Substring(3);
             }
 
             return result;

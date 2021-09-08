@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Media;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media;
 using static VideoTrimmer.VideoProcessing;
 
 namespace VideoTrimmer
@@ -13,13 +16,15 @@ namespace VideoTrimmer
     {
 
         private readonly MainWindow MainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
+        private bool IsProcessInProgress = false;
+        ResultsWindowContents result;
 
         public ProgressWindow()
         {
             InitializeComponent();
 
+            // if there is no main window, then close this progress window
             if (MainWindow == null) this.Close();
-
         }
 
         private void OnContentRendered(object sender, EventArgs e)
@@ -29,14 +34,23 @@ namespace VideoTrimmer
 
         private void ExecuteProcess()
         {
+            IsProcessInProgress = true;
             // Execute the trimming logic!
-            ResultsWindowContents result = MainWindow.videoProcessing.Execute();
+            result = MainWindow.videoProcessing.Execute();
+
+            IsProcessInProgress = false;
+
+            Caption.Content = result.caption;
+            Message.Content = result.message;
+            Message.Visibility = Visibility.Visible;
+            AbortButton.Content = "CLOSE";
+            CommandButton.Visibility = Visibility.Visible;
 
             if (result.success == true)
             {
-                // Displays the MessageBox
-                // TODO: Replace with a custom window
-                 _ = System.Windows.Forms.MessageBox.Show(result.message, result.caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                SystemSounds.Asterisk.Play();
+                ProgressBar.Value = 100;
+                ProgressValue.Content = "100%";
 
                 // Open the folder
                 string argument = "/select, \"" + result.newFileName + "\"";
@@ -44,9 +58,8 @@ namespace VideoTrimmer
             }
             else
             {
-                // Displays the MessageBox
-                // TODO: Replace with a custom window
-                _ = System.Windows.Forms.MessageBox.Show(result.message, result.caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                SystemSounds.Hand.Play();
+                ProgressBar.Foreground = new SolidColorBrush(Colors.Red);
             }
         }
 
@@ -67,8 +80,22 @@ namespace VideoTrimmer
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (ConfirmAbort()) e.Cancel = false;
-            else e.Cancel = true;
+            if (IsProcessInProgress == true)
+            {
+                if (ConfirmAbort()) e.Cancel = false;
+                else e.Cancel = true;
+            }
+        }
+
+        private async void CommandButton_ClickAsync(object sender, RoutedEventArgs e)
+        {
+            if (result.command!="")
+            {
+                System.Windows.Forms.Clipboard.SetText(result.command);
+                CommandButton.IsEnabled = false;
+                await Task.Delay(200);
+                CommandButton.IsEnabled = true;
+            }
         }
     }
 }
