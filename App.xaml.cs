@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace VideoTrimmer
@@ -17,7 +10,8 @@ namespace VideoTrimmer
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            /* disabled until I figure it out
+            // Checking for updates
+            /* 
             try
             {
                 Version version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -30,23 +24,20 @@ namespace VideoTrimmer
                 // Update server didn't respond but that's ok
                 Console.WriteLine("Update server didn't respond.");
             }
-
             */
 
+            // Check if ffmpeg.exe is present in folder
             if (System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "/ffmpeg.exe"))
             {
-                Console.WriteLine("FFMPEG has been found");
+                Console.WriteLine("FFmpeg has been found");
                 MainWindow mainWindow = new MainWindow();
                 mainWindow.Show();
-
+            // FFmpeg not found
             } else
             {
                 NoFFMPEGWindow noFFMPEGWindow = new NoFFMPEGWindow();
                 noFFMPEGWindow.Show();
             }
-
-
-
         }
     }
 }

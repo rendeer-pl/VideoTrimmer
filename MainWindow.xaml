@@ -17,6 +17,7 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+
         <StackPanel Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0" Height="50" Orientation="Horizontal">
             <Button Content="Select file" Width="75" Click="ButtonFileOpen_Click" Margin="0,10,0,16" Background="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Height="22" BorderBrush="{x:Null}"/>
             <Label Name="fileNameLabel" Content="No file selected" Margin="10,10,0,10" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Left" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" AutomationProperties.IsOffscreenBehavior="Onscreen"/>
@@ -32,6 +33,7 @@
         <Button Name="trimVideoButton" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="TRIM VIDEO" VerticalAlignment="Top" Click="ButtonTrimVideo_Click" Background="White" FontFamily="/VideoTrimmer;component/#Montserrat" FontWeight="Bold" Height="25" BorderBrush="{x:Null}" IsEnabled="False" />
 
         <Label Name="aboutFooter" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="281" Foreground="#26FFFFFF" FontSize="10" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalContentAlignment="Right"/>
+        <!-- The currently unused "About" button -->
         <!--<Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="42" Foreground="#19FFFFFF" FontSize="10" Cursor="Hand" Background="{x:Null}" BorderBrush="{x:Null}" Click="ButtonShowAbout_Click" FontFamily="/VideoTrimmer;component/#Montserrat Medium" />-->
     </Grid>
 </Window>
