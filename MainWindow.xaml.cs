@@ -296,13 +296,11 @@ namespace VideoTrimmer
                 {
                     Console.WriteLine("Dragged file recognized!");
                     Background = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0x77, 0));
+                    return;
                 }
             }
-            else
-            {
-                Console.WriteLine("Dragged file not recognized.");
-                Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x88, 0, 0));
-            }
+            Console.WriteLine("Dragged file not recognized.");
+            Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x88, 0, 0));
         }
 
 
