@@ -28,11 +28,12 @@ namespace VideoTrimmer
         }
 
         // Used to enable or disable editable fields
-        private void ChangeFieldsStatus(bool NewLockStatus)
+        private void SetFieldsLockStatus(bool NewLockStatus)
         {
             trimVideoButton.IsEnabled = NewLockStatus;
             timecodeStart.IsEnabled = NewLockStatus;
             timecodeEnd.IsEnabled = NewLockStatus;
+            removeAudio.IsEnabled = NewLockStatus;
 
             return;
         }
@@ -43,8 +44,10 @@ namespace VideoTrimmer
         {
             fileNameLabel.Content = "No file selected";
             fileNameLabel.ToolTip = "No file selected";
+            timecodeStart.Text = "00:00:00";
+            timecodeEnd.Text = "00:00:00";
             File = null;
-            ChangeFieldsStatus(false);
+            SetFieldsLockStatus(false);
 
             return;
         }
@@ -58,12 +61,13 @@ namespace VideoTrimmer
             String FileRoot = Path.GetPathRoot(File);
 
             // Unlock editable fields
-            ChangeFieldsStatus(true);
+            SetFieldsLockStatus(true);
 
             // Get video duration and paste it into "End" timecode TextBox
             var player = new WindowsMediaPlayer();
             var clip = player.newMedia(File);
             FileDuration = TimeSpan.FromSeconds(clip.duration);
+            timecodeStart.Text = "00:00:00";
             timecodeEnd.Text = FileDuration.ToString();
 
             // If file path is long, trim it
@@ -190,7 +194,12 @@ namespace VideoTrimmer
 
 
             // forge the command
-            String ConsoleCommand = "/C ffmpeg -ss " + Start + " -i \"" + File + "\" -to " + Duration + " -c copy \"" + NewFileName + "\"";
+            String ConsoleCommand = "/C ffmpeg -ss " + Start + " -i \"" + File + "\" -to " + Duration + " -c copy ";
+
+            // remove audio
+            if (removeAudio.IsChecked == true) ConsoleCommand = ConsoleCommand + "-an ";
+
+            ConsoleCommand = ConsoleCommand+"\"" + NewFileName + "\"";
             // CONSOLE COMMAND END
 
 

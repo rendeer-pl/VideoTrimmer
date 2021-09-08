@@ -9,7 +9,8 @@
     <Grid Margin="30,20,30,20">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition/>
             <RowDefinition />
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
@@ -18,21 +19,29 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0" Height="50" Orientation="Horizontal">
-            <Button Content="Select file" Width="75" Click="ButtonFileOpen_Click" Margin="0,10,0,16" Background="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Height="22" BorderBrush="{x:Null}"/>
-            <Label Name="fileNameLabel" Content="No file selected" Margin="10,10,0,10" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Left" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" AutomationProperties.IsOffscreenBehavior="Onscreen"/>
+        <!-- file info row -->
+        <StackPanel Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
+            <Button Content="Select file" Width="75" Click="ButtonFileOpen_Click" Margin="0,0,0,16" Background="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Height="22" BorderBrush="{x:Null}"/>
+            <Label Name="fileNameLabel" Content="No file selected" Margin="10,0,0,10" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Left" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" AutomationProperties.IsOffscreenBehavior="Onscreen"/>
         </StackPanel>
-        <StackPanel Grid.Column="0" Grid.Row="1" Height="50" Orientation="Horizontal" VerticalAlignment="Top">
+        <!-- timecode inputs row -->
+        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Top">
             <Label Content="Start:" VerticalAlignment="Center" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Margin="-5,0,0,0"/>
             <TextBox x:Name="timecodeStart" IsEnabled="False" Text="00:00:00" Width="92" LostFocus="Timecode_LostFocus" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Margin="10,0,0,0" HorizontalAlignment="Left" BorderBrush="{x:Null}" VerticalAlignment="Center" Height="20" />
         </StackPanel>
-        <StackPanel Grid.Column="1" Grid.Row="1" Height="50" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
             <Label Content="End:" VerticalAlignment="Center" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium"/>
             <TextBox Name="timecodeEnd" IsEnabled="False" Height="20" Text="00:00:00" Width="92"  LostFocus="Timecode_LostFocus" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Left" BorderBrush="{x:Null}" Margin="10,0,-1,0" VerticalAlignment="Center"/>
+        </StackPanel>        
+        
+        <!-- options -->
+        <StackPanel HorizontalAlignment="Left" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" VerticalAlignment="Top">
+            <CheckBox Name="removeAudio" Content="Remove audio" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" IsEnabled="False" VerticalContentAlignment="Center"/>
         </StackPanel>
-        <Button Name="trimVideoButton" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="TRIM VIDEO" VerticalAlignment="Top" Click="ButtonTrimVideo_Click" Background="White" FontFamily="/VideoTrimmer;component/#Montserrat" FontWeight="Bold" Height="25" BorderBrush="{x:Null}" IsEnabled="False" />
 
-        <Label Name="aboutFooter" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="281" Foreground="#26FFFFFF" FontSize="10" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalContentAlignment="Right"/>
+        <!-- trim video button + about -->
+        <Button Name="trimVideoButton" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Content="TRIM VIDEO" VerticalAlignment="Top" Click="ButtonTrimVideo_Click" Background="White" FontFamily="/VideoTrimmer;component/#Montserrat" FontWeight="Bold" Height="25" BorderBrush="{x:Null}" IsEnabled="False" />
+        <Label Name="aboutFooter" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="281" Foreground="#26FFFFFF" FontSize="10" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalContentAlignment="Right"/>
         <!-- The currently unused "About" button -->
         <!--<Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="42" Foreground="#19FFFFFF" FontSize="10" Cursor="Hand" Background="{x:Null}" BorderBrush="{x:Null}" Click="ButtonShowAbout_Click" FontFamily="/VideoTrimmer;component/#Montserrat Medium" />-->
     </Grid>
