@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
+using System.Windows.Shell;
 using System.Windows.Threading;
 using static VideoTrimmer.VideoProcessing;
 
@@ -30,6 +31,7 @@ namespace VideoTrimmer
             if (MainWindow.recompressFile.IsChecked == false)
             {
                 ProgressBar.IsIndeterminate = true;
+                this.TaskbarItemInfo = new TaskbarItemInfo() { ProgressState = TaskbarItemProgressState.Indeterminate };
             }
         }
 
@@ -104,6 +106,8 @@ namespace VideoTrimmer
                 ProgressValue.Visibility = Visibility.Visible;
                 ProgressBar.Value = newProgress;
                 ProgressValue.Content = newProgress.ToString() + "%";
+                this.TaskbarItemInfo = new TaskbarItemInfo() { ProgressState = TaskbarItemProgressState.Normal };
+                this.TaskbarItemInfo.ProgressValue = (double)newProgress / 100;
             }), DispatcherPriority.Background);
         }
 
@@ -140,6 +144,10 @@ namespace VideoTrimmer
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     ProgressBar.Foreground = new SolidColorBrush(Colors.Red);
+                    ProgressBar.Background = new SolidColorBrush(Colors.Red);
+                    ProgressBar.BorderBrush = new SolidColorBrush(Colors.Red);
+                    this.TaskbarItemInfo = new TaskbarItemInfo() { ProgressState = TaskbarItemProgressState.Error };
+                    this.TaskbarItemInfo.ProgressValue = (double)100;
                 }), DispatcherPriority.Background);
             }
         }
