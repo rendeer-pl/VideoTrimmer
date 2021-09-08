@@ -35,6 +35,9 @@ namespace VideoTrimmer
         private void ExecuteProcess()
         {
             IsProcessInProgress = true;
+
+            MainWindow.videoProcessing.RegisterProgressWindow(this);
+
             // Execute the trimming logic!
             result = MainWindow.videoProcessing.Execute();
 

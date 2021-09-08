@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Path = System.IO.Path;
 using WMPLib;
 using System.Diagnostics;
@@ -22,6 +21,7 @@ namespace VideoTrimmer
         private TimeSpan End;
         private bool ShouldRemoveAudio;
         private bool ShouldRecompress;
+        private ProgressWindow progressWindow;
 
 
         public bool LoadFile(string File)
@@ -36,11 +36,10 @@ namespace VideoTrimmer
             var clip = Player.newMedia(FilePath);
             FileDuration = TimeSpan.FromSeconds(clip.duration);
 
-
-
-
             return false;
         }
+
+        internal void RegisterProgressWindow(ProgressWindow newProgressWindow) => progressWindow = newProgressWindow;
 
         public string GetFilePath()
         {
@@ -103,7 +102,7 @@ namespace VideoTrimmer
         // Handles output from the transcoding process
         private void ProcessEventHandler(object e, DataReceivedEventArgs outLine)
         {
-            System.Console.WriteLine(DateTime.Now + " - " + outLine.Data);
+            Console.WriteLine(DateTime.Now + " - " + outLine.Data);
         }
 
 
@@ -215,6 +214,5 @@ namespace VideoTrimmer
 
             return result;
         }
-
     }
 }
