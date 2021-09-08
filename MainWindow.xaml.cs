@@ -122,7 +122,6 @@ namespace VideoTrimmer
                     break;
                 case System.Windows.Forms.DialogResult.Cancel:
                 default:
-                    ResetFilePicker();
                     break;
             }
         }
