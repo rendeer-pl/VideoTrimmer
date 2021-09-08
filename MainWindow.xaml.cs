@@ -34,8 +34,8 @@ namespace VideoTrimmer
             InitializeComponent();
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + ".190510";
-            
+            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".190512";
+   
         }
 
         private void ButtonFileOpen_Click(object sender, RoutedEventArgs e)
@@ -100,7 +100,7 @@ namespace VideoTrimmer
             String NewPartialPath = FilePath + "\\" + FileName + "_trim_";
 
             bool FoundUniqueName = false;
-            int UniqueFilenameIndex = 0;
+            int UniqueFilenameIndex = 1;
 
             while(FoundUniqueName == false)
             {
