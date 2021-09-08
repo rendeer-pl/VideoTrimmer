@@ -23,7 +23,7 @@ namespace VideoTrimmer
 
             // Updating the "About" footer
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".200209";
+            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".200210";
         }
 
         // Used to enable or disable editable fields
@@ -219,6 +219,8 @@ namespace VideoTrimmer
 
             // open the progress window that executes the main process
             ProgressWindow progressWindow = new ProgressWindow();
+            progressWindow.Owner = this;
+            progressWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             progressWindow.ShowDialog();
 
         }

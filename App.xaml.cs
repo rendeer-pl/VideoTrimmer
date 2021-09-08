@@ -31,6 +31,7 @@ namespace VideoTrimmer
             {
                 Console.WriteLine("FFmpeg has been found");
                 MainWindow mainWindow = new MainWindow();
+                mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
                 mainWindow.Show();
             // FFmpeg not found
             } else
