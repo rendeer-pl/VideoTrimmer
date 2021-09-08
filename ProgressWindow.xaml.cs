@@ -74,7 +74,7 @@ namespace VideoTrimmer
 
         private async void CommandButton_ClickAsync(object sender, RoutedEventArgs e)
         {
-            if (result.command!="")
+            if (result.command!=null)
             {
                 System.Windows.Forms.Clipboard.SetText(result.command);
                 CommandButton.IsEnabled = false;
@@ -83,8 +83,9 @@ namespace VideoTrimmer
             }
         }
 
-        internal void TrimmingComplete(ResultsWindowContents result)
+        internal void TrimmingComplete(ResultsWindowContents newResult)
         {
+            result = newResult;
             IsProcessInProgress = false;
             Dispatcher.BeginInvoke(new Action(() =>
             {
