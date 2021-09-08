@@ -13,7 +13,10 @@ namespace VideoTrimmer
         private String FileExtension;
         private String FileDirectory;
         private TimeSpan FileDuration;
+        private String NewFileName;
+        private String ConsoleCommand;
         private WindowsMediaPlayer Player = new WindowsMediaPlayer();
+        Process process = new Process();
         private ResultsWindowContents result;
         private string[] SupportedVideoFormats = new string[] { ".mp4", ".mpg", ".mpeg", ".wmv", ".mov", ".mts", ".m2ts", ".vob" };
         private string[] SupportedAudioFormats = new string[] { ".mp3", ".wav", ".aiff" };
@@ -132,8 +135,10 @@ namespace VideoTrimmer
             ShouldRecompress = NewShouldRecompress;
         }
 
-        public ResultsWindowContents Execute()
+        public void Execute()
         {
+
+            process = new Process();
 
             TimeSpan Duration = End - Start;
 
@@ -154,11 +159,11 @@ namespace VideoTrimmer
                     FoundUniqueName = true;
                 }
             }
-            String NewFileName = NewPartialPath + UniqueFilenameIndex + FileExtension;
+            NewFileName = NewPartialPath + UniqueFilenameIndex + FileExtension;
 
 
             // forge the command
-            String ConsoleCommand = "/C ffmpeg -ss " + Start.ToString() + " -i \"" + FilePath + "\" -t " + Duration.ToString() + " ";
+            ConsoleCommand = "/C ffmpeg -ss " + Start.ToString() + " -i \"" + FilePath + "\" -t " + Duration.ToString() + " ";
 
             // are we recompressing the video?
             if (ShouldRecompress == false) ConsoleCommand += "-c copy ";
@@ -171,7 +176,6 @@ namespace VideoTrimmer
 
 
             // Prepare the process to execute the command
-            Process process = new Process();
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Normal,
@@ -180,19 +184,25 @@ namespace VideoTrimmer
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                CreateNoWindow = true
-            };
+                CreateNoWindow = true,
+        };
 
             // bind methods to receiving output data from pricess
             process.OutputDataReceived += new DataReceivedEventHandler(ProcessEventHandler);
             process.ErrorDataReceived += new DataReceivedEventHandler(ProcessEventHandler);
+            process.EnableRaisingEvents = true;
+            process.Exited += new EventHandler(ProcessExited);
 
             // Launch the process and start listening for output
             process.StartInfo = startInfo;
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
-            process.WaitForExit();
+        }
+
+        private void ProcessExited(object sender, EventArgs e)
+        {
+            Console.WriteLine("Process Exited");
 
             // Command executed successfully
             if (process.ExitCode == 0)
@@ -212,7 +222,7 @@ namespace VideoTrimmer
                 result.command = ConsoleCommand.Substring(3);
             }
 
-            return result;
+            progressWindow.TrimmingComplete(result);
         }
     }
 }

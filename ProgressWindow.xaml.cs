@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
+using System.Windows.Threading;
 using static VideoTrimmer.VideoProcessing;
 
 namespace VideoTrimmer
@@ -25,6 +26,11 @@ namespace VideoTrimmer
 
             // if there is no main window, then close this progress window
             if (MainWindow == null) this.Close();
+
+            if (MainWindow.recompressFile.IsChecked == false)
+            {
+                ProgressBar.IsIndeterminate = true;
+            }
         }
 
         private void OnContentRendered(object sender, EventArgs e)
@@ -39,31 +45,7 @@ namespace VideoTrimmer
             MainWindow.videoProcessing.RegisterProgressWindow(this);
 
             // Execute the trimming logic!
-            result = MainWindow.videoProcessing.Execute();
-
-            IsProcessInProgress = false;
-
-            Caption.Content = result.caption;
-            Message.Content = result.message;
-            Message.Visibility = Visibility.Visible;
-            AbortButton.Content = "CLOSE";
-            CommandButton.Visibility = Visibility.Visible;
-
-            if (result.success == true)
-            {
-                SystemSounds.Asterisk.Play();
-                ProgressBar.Value = 100;
-                ProgressValue.Content = "100%";
-
-                // Open the folder
-                string argument = "/select, \"" + result.newFileName + "\"";
-                Process.Start("explorer.exe", argument);
-            }
-            else
-            {
-                SystemSounds.Hand.Play();
-                ProgressBar.Foreground = new SolidColorBrush(Colors.Red);
-            }
+            MainWindow.videoProcessing.Execute();
         }
 
         private bool ConfirmAbort()
@@ -98,6 +80,45 @@ namespace VideoTrimmer
                 CommandButton.IsEnabled = false;
                 await Task.Delay(200);
                 CommandButton.IsEnabled = true;
+            }
+        }
+
+        internal void TrimmingComplete(ResultsWindowContents result)
+        {
+            IsProcessInProgress = false;
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                ProgressBar.IsIndeterminate = false;
+
+                Caption.Content = result.caption;
+                Message.Content = result.message;
+                Message.Visibility = Visibility.Visible;
+                AbortButton.Content = "CLOSE";
+                CommandButton.Visibility = Visibility.Visible;
+                ProgressValue.Visibility = Visibility.Visible;
+            }), DispatcherPriority.Background);
+
+            if (result.success == true)
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    SystemSounds.Asterisk.Play();
+                    ProgressBar.Value = 100;
+                    ProgressValue.Content = "100%";
+                }), DispatcherPriority.Background);
+                
+
+                // Open the folder
+                string argument = "/select, \"" + result.newFileName + "\"";
+                Process.Start("explorer.exe", argument);
+            }
+            else
+            {
+                SystemSounds.Hand.Play();
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    ProgressBar.Foreground = new SolidColorBrush(Colors.Red);
+                }), DispatcherPriority.Background);
             }
         }
     }
