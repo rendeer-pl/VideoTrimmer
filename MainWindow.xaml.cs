@@ -117,6 +117,11 @@ namespace VideoTrimmer
                 MediaPlayerOnTimeChanged(sender, e);
             };
 
+            mediaPlayerClock.Completed += delegate (object sender, EventArgs e)
+            {
+                PlayPauseButton.Content = "▶";
+            };
+
             TimelineSlider.AddHandler(MouseLeftButtonUpEvent,
                       new MouseButtonEventHandler(SliderValueManuallyChanged),
                       true);
@@ -361,8 +366,11 @@ namespace VideoTrimmer
 
             if (MediaPlayer.IsLoaded)
             {
-                if (MediaPlayer.Position == MediaPlayer.NaturalDuration) mediaPlayerClock.Controller.Seek(TimeSpan.Zero, TimeSeekOrigin.BeginTime);
-                if (mediaPlayerClock.IsPaused)
+                bool videoEnd = mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
+
+                if (videoEnd) mediaPlayerClock.Controller.Seek(TimeSpan.Zero, TimeSeekOrigin.BeginTime);
+
+                if (mediaPlayerClock.IsPaused || videoEnd)
                 {
                     PlayPauseButton.Content = "❚❚";
                     mediaPlayerClock.Controller.Resume();
