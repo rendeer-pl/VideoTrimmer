@@ -35,11 +35,14 @@ namespace VideoTrimmer
                 MainWindow mainWindow = new MainWindow();
                 mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
                 mainWindow.Show();
-            // FFmpeg not found
-            } else
+                mainWindow.Title = Globals.appTitle;
+            }
+            else
             {
+                // FFmpeg not found
                 NoFFMPEGWindow noFFMPEGWindow = new NoFFMPEGWindow();
                 noFFMPEGWindow.Show();
+                noFFMPEGWindow.Title = Globals.appTitle;
             }
         }
     }
