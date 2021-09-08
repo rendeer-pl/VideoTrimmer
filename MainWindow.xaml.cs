@@ -24,7 +24,7 @@ namespace VideoTrimmer
 
             // Updating the "About" footer
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".190518";
+            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".190519";
         }
 
         // Used to enable or disable editable fields
@@ -237,21 +237,27 @@ namespace VideoTrimmer
             {
                 caption = "Everything should be ok";
                 message = "Video trimmed using the following command:\n\r\n\r" + ConsoleCommand.Substring(3);
+
+                // Displays the MessageBox
+                // TODO: Replace with a custom window
+                _ = System.Windows.Forms.MessageBox.Show(message, caption, MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+
+                // Open the folder
+                string argument = "/select, \"" + NewFileName + "\"";
+                Process.Start("explorer.exe", argument);
             }
             // Command failed
             else
             {
                 caption = "Something went wrong";
                 message = "Command that was used:\n\r\n\r" + ConsoleCommand.Substring(3);
+
+                // Displays the MessageBox
+                // TODO: Replace with a custom window
+                _ = System.Windows.Forms.MessageBox.Show(message, caption, MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
             }
 
-            // Displays the MessageBox
-            // TODO: Replace with a custom window
-            _ = System.Windows.Forms.MessageBox.Show(message, caption, MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
 
-            // Open the folder
-            string argument = "/select, \"" + NewFileName + "\"";
-            Process.Start("explorer.exe", argument);
         }
 
         // Displays "About" window
