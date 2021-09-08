@@ -38,11 +38,13 @@
         <!-- timecode inputs row -->
         <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Top">
             <Label Content="Start:" VerticalAlignment="Center" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Margin="-5,0,0,0"/>
-            <TextBox x:Name="timecodeStart" IsEnabled="False" Text="00:00:00" Width="92" LostFocus="Timecode_LostFocus" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Margin="10,0,0,0" HorizontalAlignment="Left" BorderBrush="{x:Null}" VerticalAlignment="Center" Height="20" />
+            <TextBox x:Name="timecodeStart" IsEnabled="False" Text="00:00:00" Width="92" LostFocus="Timecode_LostFocus" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Margin="10,0,10,0" HorizontalAlignment="Left" BorderBrush="{x:Null}" VerticalAlignment="Center" Height="20" />
+            <Button ToolTip="Use current position of the video player as Start timecode" Name="StartTimecodePickButton" Content="⧨" VerticalAlignment="Center" Width="22" Height="20" Click="OnTimecodePickButtonClicked" IsEnabled="False" Tag="Start" />
         </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
             <Label Content="End:" VerticalAlignment="Center" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium"/>
-            <TextBox Name="timecodeEnd" IsEnabled="False" Height="20" Text="00:00:00" Width="92"  LostFocus="Timecode_LostFocus" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Left" BorderBrush="{x:Null}" Margin="10,0,-1,0" VerticalAlignment="Center"/>
+            <TextBox Name="timecodeEnd" IsEnabled="False" Height="20" Text="00:00:00" Width="92"  LostFocus="Timecode_LostFocus" TextAlignment="Center" MaxLength="8" MaxLines="1" FontSize="14" FontFamily="/VideoTrimmer;component/#Montserrat Medium" HorizontalAlignment="Left" BorderBrush="{x:Null}" Margin="10,0,9,0" VerticalAlignment="Center"/>
+            <Button ToolTip="Use current position of the video player as End timecode" Name="EndTimecodePickButton" Content="⧩" VerticalAlignment="Center" Width="22" Height="20" Click="OnTimecodePickButtonClicked" IsEnabled="False" Margin="0,0,-1,0" Tag="End" />
         </StackPanel>
         <Separator Grid.ColumnSpan="2" Height="2" Margin="0,6,0,0" Grid.Row="3" VerticalAlignment="Top"/>
         

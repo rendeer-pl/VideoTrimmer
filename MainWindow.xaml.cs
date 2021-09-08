@@ -52,6 +52,8 @@ namespace VideoTrimmer
             recompressFile.IsEnabled = NewLockStatus;
             PlayPauseButton.IsEnabled = NewLockStatus;
             TimelineSlider.IsEnabled = NewLockStatus;
+            StartTimecodePickButton.IsEnabled = NewLockStatus;
+            EndTimecodePickButton.IsEnabled = NewLockStatus;
 
             // if the form is unlocking then enable the recompression options depending on the checkbox value. If the form is locking, then just disable everything.
             if (NewLockStatus == true) RecompressFile_ValueChanged(null, null);
@@ -158,16 +160,13 @@ namespace VideoTrimmer
             }
         }
 
-        // validates values in timecode text boxes
-        private void Timecode_LostFocus(object sender, RoutedEventArgs e)
+        private void ValidateTimecodeTextBox(System.Windows.Controls.TextBox TimecodeTextBox)
         {
-            System.Windows.Controls.TextBox senderTextBox = (System.Windows.Controls.TextBox)sender;
-
             // check if a value is a valid TimeSpan
-            if (TimeSpan.TryParse(senderTextBox.Text, out _))
+            if (TimeSpan.TryParse(TimecodeTextBox.Text, out _))
             {
                 // check if the value is shorter or equal to FileDuration
-                if (TimeSpan.Parse(senderTextBox.Text) <= videoProcessing.GetDuration())
+                if (TimeSpan.Parse(TimecodeTextBox.Text) <= videoProcessing.GetDuration())
                 {
                     // make sure that none of the TextBoxes is null
                     if (timecodeStart == null | timecodeEnd == null)
@@ -181,7 +180,7 @@ namespace VideoTrimmer
                         if (TimeSpan.Parse(timecodeStart.Text) < TimeSpan.Parse(timecodeEnd.Text))
                         {
                             // accept the value, but parse it to make sure the leading zeros are there
-                            senderTextBox.Text = TimeSpan.Parse(senderTextBox.Text).ToString();
+                            TimecodeTextBox.Text = TimeSpan.Parse(TimecodeTextBox.Text).ToString();
                             return;
                         }
                     }
@@ -189,9 +188,17 @@ namespace VideoTrimmer
             }
 
             // if everything failed -- undo editing field
-            _ = Dispatcher.BeginInvoke(new Action(() => senderTextBox.Undo()));
+            _ = Dispatcher.BeginInvoke(new Action(() => TimecodeTextBox.Undo()));
+            System.Media.SystemSounds.Asterisk.Play();
 
             return;
+        }
+
+        // handles value change in timecode text boxes
+        private void Timecode_LostFocus(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.TextBox senderTextBox = (System.Windows.Controls.TextBox)sender;
+            ValidateTimecodeTextBox(senderTextBox);
         }
 
 
@@ -370,8 +377,8 @@ namespace VideoTrimmer
             }
         }
 
-        // User clicked on the slider, so let's disable automatic slider updates
-        private void SliderInteractionStarted(object sender, MouseButtonEventArgs e)
+         // User clicked on the slider, so let's disable automatic slider updates
+         private void SliderInteractionStarted(object sender, MouseButtonEventArgs e)
         {
             SliderUpdatesPossible = false;
         }
@@ -387,5 +394,35 @@ namespace VideoTrimmer
             if (wasPaused == false) mediaPlayerClock.Controller.Resume();
             SliderUpdatesPossible = true;
         }
+
+
+        // User wants to use current position of the video player as the Start or End timecode
+        private void OnTimecodePickButtonClicked(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.Button senderButton = (System.Windows.Controls.Button)sender;
+
+            System.Windows.Controls.TextBox TextBoxToUpdate;
+
+            switch (senderButton.Tag.ToString())
+            {
+                case "Start":
+                    TextBoxToUpdate = timecodeStart;
+                    break;
+                case "End":
+                    TextBoxToUpdate = timecodeEnd;
+                    break;
+                default:
+                    Console.WriteLine("Couldn't identify textbox to update!");
+                    return;
+            }
+
+            // get current media position and set it 
+            TextBoxToUpdate.Text = mediaPlayerClock.CurrentTime.Value.ToString(@"hh\:mm\:ss");
+
+            // attempt to set it as in timecode
+            ValidateTimecodeTextBox(TextBoxToUpdate);
+        }
+
+
     }
 }
