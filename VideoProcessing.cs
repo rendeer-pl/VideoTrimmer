@@ -232,7 +232,7 @@ namespace VideoTrimmer
             // are we removing audio?
             if (ShouldRemoveAudio == true) ConsoleCommand += "-an ";
 
-            ConsoleCommand += "\"" + NewFileName + "\" -progress pipe:1\"";
+            ConsoleCommand += "-metadata:s handler_name=\"\" \"" + NewFileName + "\" -progress pipe:1\"";
 
 #if DEBUG
             Console.WriteLine(ConsoleCommand);
