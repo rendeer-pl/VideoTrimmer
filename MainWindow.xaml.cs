@@ -24,7 +24,7 @@ namespace VideoTrimmer
 
             // Updating the "About" footer
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".190519";
+            aboutFooter.Content = "Rendeer " + version.Major + "." + version.Minor + "." + version.Build + ".190520";
         }
 
         // Used to enable or disable editable fields
@@ -34,6 +34,10 @@ namespace VideoTrimmer
             timecodeStart.IsEnabled = NewLockStatus;
             timecodeEnd.IsEnabled = NewLockStatus;
             removeAudio.IsEnabled = NewLockStatus;
+            recompressFile.IsEnabled = NewLockStatus;
+            recompressOptionsGroup.IsEnabled = NewLockStatus;
+            reduceFileSize.IsEnabled = NewLockStatus;
+            reduceVideoSize.IsEnabled = NewLockStatus;
 
             return;
         }
@@ -42,8 +46,8 @@ namespace VideoTrimmer
         // Reset window to state without file selected
         private void ResetFilePicker()
         {
-            fileNameLabel.Content = "No file selected";
-            fileNameLabel.ToolTip = "No file selected";
+            fileNameLabel.Content = "No video selected";
+            fileNameLabel.ToolTip = "No video selected";
             timecodeStart.Text = "00:00:00";
             timecodeEnd.Text = "00:00:00";
             File = null;
