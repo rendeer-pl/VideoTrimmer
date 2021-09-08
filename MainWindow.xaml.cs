@@ -99,7 +99,7 @@ namespace VideoTrimmer
         // validates input into timecode text boxes
         private void Timecode_LostFocus(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.TextBox senderTextBox = (System.Windows.Forms.TextBox)sender;
+            System.Windows.Controls.TextBox senderTextBox = (System.Windows.Controls.TextBox)sender;
 
             if (TimeSpan.TryParse(senderTextBox.Text, out _))
             {
