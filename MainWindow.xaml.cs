@@ -72,6 +72,7 @@ namespace VideoTrimmer
             bool NewLockStatus = (bool)recompressFile.IsChecked;
             DesiredFileSize.IsEnabled = NewLockStatus;
             DesiredFileSizeLabel.IsEnabled = NewLockStatus;
+            DesiredFileSizeLabelSuffix.IsEnabled = NewLockStatus;
         }
 
         // Reset window to state without file selected
@@ -315,7 +316,7 @@ namespace VideoTrimmer
             string[] files = (string[])(e.Data.GetData("FileDrop", false));
             
             // restore default background
-            Background = Brushes.Black;
+            Background = new SolidColorBrush(Color.FromRgb(33,33,33));
 
             // in case the dropped object is not a file
             if (files == null) return;
@@ -339,7 +340,7 @@ namespace VideoTrimmer
         // Fired whenever an object that has been dragged over the app window has left the window
         private void Window_DragLeave(object sender, System.Windows.DragEventArgs e)
         {
-            Background = Brushes.Black;
+            Background = new SolidColorBrush(Color.FromRgb(33, 33, 33));
         }
 
         // Methods related to the video player
@@ -429,6 +430,9 @@ namespace VideoTrimmer
             ValidateTimecodeTextBox(TextBoxToUpdate);
         }
 
-
+        private void ClearKeyboardFocus(object sender, MouseButtonEventArgs e)
+        {
+            Keyboard.ClearFocus();
+        }
     }
 }

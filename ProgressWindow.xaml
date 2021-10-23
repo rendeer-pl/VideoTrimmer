@@ -5,15 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VideoTrimmer"
         mc:Ignorable="d"
-        Title="Progress" Height="200" Width="500" Background="Black" ResizeMode="NoResize" Margin="0,0,0,0" Closing="Window_Closing" ContentRendered="OnContentRendered">
+        Title="Progress" Height="200" Width="500" Background="#FF212121" ResizeMode="NoResize" Margin="0,0,0,0" Closing="Window_Closing" ContentRendered="OnContentRendered">
     <Grid Margin="20,20,20,20">
-        <Label Name="Caption" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,0,0,0" Content="Trimming..." Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat" FontWeight="Bold" Width="406" />
-        <ProgressBar Name="ProgressBar" HorizontalAlignment="Center" Height="20" Margin="0,30,0,0" VerticalAlignment="Top" Width="390" IsEnabled="False" Value="0" />
-        <Label Visibility="Hidden" Name="ProgressValue" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,28,0,0" Content="0%" Foreground="Black" FontFamily="/VideoTrimmer;component/#Montserrat Medium"  />
-        <Button Name="CommandButton" Content="Copy command to clipboard" Width="Auto"  Foreground="#FF00AEFF" HorizontalAlignment="Right" VerticalAlignment="Top"  Margin="0,55,30,0" FontFamily="/VideoTrimmer;component/#Montserrat Medium" FontSize="10" Background="{x:Null}" HorizontalContentAlignment="Right" TabIndex="2" BorderBrush="{x:Null}" Click="CommandButton_ClickAsync" Visibility="Hidden" />
-        <Label Name="Message" Content="" Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,76,0,0" Foreground="White" FontFamily="/VideoTrimmer;component/#Montserrat Medium" FontSize="10" Width="397" MaxWidth="408"  >
-
-        </Label>
-        <Button Name="AbortButton" Content="CANCEL" VerticalAlignment="Bottom" Background="White" FontFamily="/VideoTrimmer;component/#Montserrat" FontWeight="Bold" Height="25" BorderBrush="{x:Null}" IsEnabled="True" HorizontalAlignment="Center" Margin="0,0,0,5" Width="390" Click="AbortButton_Click" TabIndex="1" />
+        <Label Name="Caption" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,0,0,0" Content="Trimming..." Foreground="White" Width="406" FontSize="14" />
+        <ProgressBar Name="ProgressBar" HorizontalAlignment="Center" Height="22" Margin="0,30,0,0" VerticalAlignment="Top" Width="390" IsEnabled="False" FontSize="14" Padding="0,-2,0,0" Template="{DynamicResource ProgressBarControlTemplate}" />
+        <Label Name="ProgressValue" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,28,0,0" Content="0%" Foreground="Black" Visibility="Hidden" />
+        <Button Name="CommandButton" Content="Copy command to clipboard" Width="Auto"  Foreground="#FF00AEFF" HorizontalAlignment="Right" VerticalAlignment="Top"  Margin="0,55,30,0" Background="{x:Null}" HorizontalContentAlignment="Right" TabIndex="2" BorderBrush="{x:Null}" Click="CommandButton_ClickAsync" Visibility="Hidden" />
+        <Label Name="Message" Content="" Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,76,0,0" Foreground="White" Width="397" MaxWidth="408"  />
+        <Button Name="AbortButton" Content="CANCEL" VerticalAlignment="Bottom" FontWeight="Bold" Height="25" IsEnabled="True" HorizontalAlignment="Center" Margin="0,0,0,5" Width="390" Click="AbortButton_Click" TabIndex="1" Template="{DynamicResource PrimaryActionButtonTemplate}" />
     </Grid>
 </Window>

@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VideoTrimmer"
         mc:Ignorable="d"
-        Title="Video Trimmer " Height="256" Width="430" Background="Black" ResizeMode="NoResize">
+        Title="Video Trimmer " Height="256" Width="430" Background="#FF212121" ResizeMode="NoResize">
     <Grid Margin="30,20,30,20">
         <Label Content="(╯°□°)╯︵ ┻━┻" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Top" FontSize="36" Foreground="White"/>
-        <Label Content="ffmpeg.exe not found!" HorizontalAlignment="Center" Margin="0,58,0,0" VerticalAlignment="Top" FontSize="18" FontFamily="/VideoTrimmer;component/#Montserrat" Foreground="White" FontWeight="Bold"/>
-        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" Margin="0,95,0,0" VerticalAlignment="Top" FontFamily="/VideoTrimmer;component/#Montserrat Medium" Foreground="White" Height="36" Width="350">This app requires ffmpeg.exe to be placed in the same directory as VideoTrimmer.exe.</TextBlock>
-        <Button Content="CLICK HERE TO DOWNLOAD FFMPEG" HorizontalAlignment="Center" Margin="0,138,0,0" VerticalAlignment="Top" Width="350" BorderBrush="White" Click="ButtonDownload_Click" FontFamily="/VideoTrimmer;component/#Montserrat" Height="25" Background="White" FontWeight="Bold"></Button>
+        <Label Content="ffmpeg.exe not found!" HorizontalAlignment="Center" Margin="0,58,0,0" VerticalAlignment="Top" FontSize="18" Foreground="White" FontWeight="Bold"/>
+        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" Margin="0,95,0,0" VerticalAlignment="Top" Foreground="White" Height="36" Width="350">This app requires ffmpeg.exe to be placed in the same directory as VideoTrimmer.exe.</TextBlock>
+        <Button Content="CLICK HERE TO DOWNLOAD FFMPEG" HorizontalAlignment="Center" Margin="0,138,0,0" VerticalAlignment="Top" Width="350" Click="ButtonDownload_Click" Height="25" FontWeight="Bold" Template="{DynamicResource PrimaryActionButtonTemplate}"></Button>
 
 
     </Grid>
