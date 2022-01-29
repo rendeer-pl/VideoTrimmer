@@ -19,6 +19,8 @@ namespace VideoTrimmer
 
         public VideoProcessing videoProcessing = new VideoProcessing();
 
+        private const string timeFormat = @"hh\:mm\:ss";
+
         public MainWindow()
         {
             InitializeComponent();
@@ -80,12 +82,23 @@ namespace VideoTrimmer
         {
             fileNameLabel.Content = "No video selected";
             fileNameLabel.ToolTip = "No video selected";
-            timecodeStart.Text = "00:00:00";
-            timecodeEnd.Text = "00:00:00";
+            timecodeStart.Text = GetStringFromTimeSpan(TimeSpan.FromSeconds(0.0));
+            timecodeEnd.Text = GetStringFromTimeSpan(TimeSpan.FromSeconds(0.0));
             videoProcessing = new VideoProcessing();
             SetFieldsLockStatus(false);
 
             return;
+        }
+
+        private void UpdateCurrentTimeText(TimeSpan? timeSpan)
+        {
+            timecodeCurrent.Text = GetStringFromTimeSpan(timeSpan);
+        }
+
+        private string GetStringFromTimeSpan(TimeSpan? timeSpan)
+        {
+            TimeSpan targetTimeSpan = timeSpan.HasValue ? timeSpan.Value : TimeSpan.FromSeconds(0.0);
+            return targetTimeSpan.ToString(timeFormat);
         }
 
         // Analyzing a file selected via drag and dopping or using "Open File" dialog
@@ -106,8 +119,8 @@ namespace VideoTrimmer
             SetFieldsLockStatus(true);
 
             // Get video duration and paste it into "End" timecode TextBox
-            timecodeStart.Text = "00:00:00";
-            timecodeEnd.Text = videoProcessing.GetDuration().ToString(@"hh\:mm\:ss");
+            timecodeStart.Text = GetStringFromTimeSpan(TimeSpan.FromSeconds(0.0));
+            timecodeEnd.Text = GetStringFromTimeSpan(videoProcessing.GetDuration());
 
             mediaPlayerTimeline.Source = new Uri(videoProcessing.GetFilePath());
             mediaPlayerClock = mediaPlayerTimeline.CreateClock();
@@ -169,7 +182,7 @@ namespace VideoTrimmer
         private void ValidateTimecodeTextBox(System.Windows.Controls.TextBox TimecodeTextBox)
         {
             // check if a value is a valid TimeSpan
-            if (TimeSpan.TryParse(TimecodeTextBox.Text, out _))
+            if (TimeSpan.TryParseExact(TimecodeTextBox.Text, timeFormat, null, out _))
             {
                 // check if the value is shorter or equal to FileDuration
                 if (TimeSpan.Parse(TimecodeTextBox.Text) <= videoProcessing.GetDuration())
@@ -358,6 +371,7 @@ namespace VideoTrimmer
         private void MediaPlayerOnTimeChanged(object sender, EventArgs e)
         {
             if (SliderUpdatesPossible) TimelineSlider.Value = mediaPlayerClock.CurrentTime.Value.TotalMilliseconds;
+            UpdateCurrentTimeText(mediaPlayerClock.CurrentTime);
         }
 
         // User interaction - button clicked
@@ -384,10 +398,15 @@ namespace VideoTrimmer
             }
         }
 
-         // User clicked on the slider, so let's disable automatic slider updates
-         private void SliderInteractionStarted(object sender, MouseButtonEventArgs e)
+        // User clicked on the slider, so let's disable automatic slider updates
+        private void SliderInteractionStarted(object sender, MouseButtonEventArgs e)
         {
             SliderUpdatesPossible = false;
+        }
+
+        private void SliderValueChanged(object sender, MouseButtonEventArgs e)
+        {
+            UpdateCurrentTimeText(mediaPlayerClock.CurrentTime);
         }
 
         // User finished interaction with the slider, let's update the video
@@ -424,7 +443,7 @@ namespace VideoTrimmer
             }
 
             // get current media position and set it 
-            TextBoxToUpdate.Text = mediaPlayerClock.CurrentTime.Value.ToString(@"hh\:mm\:ss");
+            TextBoxToUpdate.Text = GetStringFromTimeSpan(mediaPlayerClock.CurrentTime);
 
             // attempt to set it as in timecode
             ValidateTimecodeTextBox(TextBoxToUpdate);
@@ -433,6 +452,22 @@ namespace VideoTrimmer
         private void ClearKeyboardFocus(object sender, MouseButtonEventArgs e)
         {
             Keyboard.ClearFocus();
+        }
+
+        private void TimelineSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            System.Windows.Controls.Slider slider = (System.Windows.Controls.Slider)sender;
+
+            // update current time
+            if (mediaPlayerClock.NaturalDuration.HasTimeSpan)
+            {
+                float timePercentage = (float)(slider.Value / slider.Maximum);
+                TimeSpan timeSpan = TimeSpan.FromSeconds(mediaPlayerClock.NaturalDuration.TimeSpan.TotalSeconds * timePercentage);
+                UpdateCurrentTimeText(timeSpan);
+            }
+
+            // update media to show current frame
+            mediaPlayerClock.Controller.Seek(TimeSpan.FromMilliseconds(slider.Value), TimeSeekOrigin.BeginTime);
         }
     }
 }
