@@ -52,6 +52,8 @@ namespace VideoTrimmer
             timecodeEnd.IsEnabled = NewLockStatus;
             removeAudio.IsEnabled = NewLockStatus;
             recompressFile.IsEnabled = NewLockStatus;
+            jumpToStartMarkerButton.IsEnabled = NewLockStatus == false;
+            jumpToEndMarkerButton.IsEnabled = NewLockStatus == false;
             PlayPauseButton.IsEnabled = NewLockStatus;
             TimelineSlider.IsEnabled = NewLockStatus;
             StartTimecodePickButton.IsEnabled = NewLockStatus;
@@ -179,7 +181,7 @@ namespace VideoTrimmer
             }
         }
 
-        private void ValidateTimecodeTextBox(System.Windows.Controls.TextBox TimecodeTextBox)
+        private bool ValidateTimecodeTextBox(System.Windows.Controls.TextBox TimecodeTextBox)
         {
             // check if a value is a valid TimeSpan
             if (TimeSpan.TryParseExact(TimecodeTextBox.Text, timeFormat, null, out _))
@@ -191,7 +193,7 @@ namespace VideoTrimmer
                     if (timecodeStart == null | timecodeEnd == null)
                     {
                         // one of the fields has not been initialized, do nothing
-                        return;
+                        return false;
                     }
                     else
                     {
@@ -200,7 +202,7 @@ namespace VideoTrimmer
                         {
                             // accept the value, but parse it to make sure the leading zeros are there
                             TimecodeTextBox.Text = TimeSpan.Parse(TimecodeTextBox.Text).ToString();
-                            return;
+                            return true;
                         }
                     }
                 }
@@ -210,7 +212,7 @@ namespace VideoTrimmer
             _ = Dispatcher.BeginInvoke(new Action(() => TimecodeTextBox.Undo()));
             System.Media.SystemSounds.Asterisk.Play();
 
-            return;
+            return false;
         }
 
         // handles value change in timecode text boxes
@@ -375,6 +377,24 @@ namespace VideoTrimmer
         }
 
         // User interaction - button clicked
+        private void OnJumpToStartMarkerButtonPressed(object sender, RoutedEventArgs e)
+        {
+            if (mediaPlayerTimeline.Source == null) return;
+
+            if (MediaPlayer.IsLoaded)
+                mediaPlayerClock.Controller.Seek(TimeSpan.Parse(timecodeStart.Text), TimeSeekOrigin.BeginTime);
+        }
+
+        // User interaction - button clicked
+        private void OnJumpToEndMarkerButtonPressed(object sender, RoutedEventArgs e)
+        {
+            if (mediaPlayerTimeline.Source == null) return;
+
+            if (MediaPlayer.IsLoaded)
+                mediaPlayerClock.Controller.Seek(TimeSpan.Parse(timecodeEnd.Text), TimeSeekOrigin.BeginTime);
+        }
+
+        // User interaction - button clicked
         private void OnPlayPauseButtonClicked(object sender, RoutedEventArgs e)
         {
             if (mediaPlayerTimeline.Source == null) return;
@@ -428,14 +448,17 @@ namespace VideoTrimmer
             System.Windows.Controls.Button senderButton = (System.Windows.Controls.Button)sender;
 
             System.Windows.Controls.TextBox TextBoxToUpdate;
+            System.Windows.Controls.Button ButtonToUpdate;
 
             switch (senderButton.Tag.ToString())
             {
                 case "Start":
                     TextBoxToUpdate = timecodeStart;
+                    ButtonToUpdate = jumpToStartMarkerButton;
                     break;
                 case "End":
                     TextBoxToUpdate = timecodeEnd;
+                    ButtonToUpdate = jumpToEndMarkerButton;
                     break;
                 default:
                     Console.WriteLine("Couldn't identify textbox to update!");
@@ -446,7 +469,8 @@ namespace VideoTrimmer
             TextBoxToUpdate.Text = GetStringFromTimeSpan(mediaPlayerClock.CurrentTime);
 
             // attempt to set it as in timecode
-            ValidateTimecodeTextBox(TextBoxToUpdate);
+            bool didValidateTimecode = ValidateTimecodeTextBox(TextBoxToUpdate);
+            ButtonToUpdate.IsEnabled = didValidateTimecode;
         }
 
         private void ClearKeyboardFocus(object sender, MouseButtonEventArgs e)
