@@ -8,6 +8,41 @@ using Path = System.IO.Path;
 
 namespace VideoTrimmer
 {
+    public class TimeCodeWrapper
+    {
+        public bool IsStartMarker { get; private set; }
+        public System.Windows.Controls.TextBox TextBox { get; private set; }
+        public System.Windows.Controls.Button ButtonSet { get; private set; }
+        public System.Windows.Controls.Button ButtonJumpTo { get; private set; }
+        public TimeSpan? CurrentTime { get; private set; }
+
+        public TimeCodeWrapper(System.Windows.Controls.TextBox textBox, System.Windows.Controls.Button buttonSet, System.Windows.Controls.Button buttonJumpTo, bool isStartMarker)
+        {
+            TextBox = textBox;
+            ButtonSet = buttonSet;
+            ButtonJumpTo = buttonJumpTo;
+            IsStartMarker = isStartMarker;
+
+            SetTimeSpan(null);
+        }
+
+        public void SetTimeSpan(TimeSpan? timeSpan)
+        {
+            CurrentTime = timeSpan;
+            TextBox.Text = CurrentTime.HasValue ? CurrentTime.Value.ToString(Globals.timeFormat) : "N/A";
+            ButtonSet.IsEnabled = CurrentTime.HasValue;
+            ButtonJumpTo.IsEnabled = CurrentTime.HasValue;
+        }
+
+        public void SetLockStatus(bool newLockStatus)
+        {
+            TextBox.IsEnabled = newLockStatus;
+            ButtonSet.IsEnabled = newLockStatus;
+            ButtonJumpTo.IsEnabled = !newLockStatus;
+            CurrentTime = null;
+        }
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -19,7 +54,8 @@ namespace VideoTrimmer
 
         public VideoProcessing videoProcessing = new VideoProcessing();
 
-        private const string timeFormat = @"hh\:mm\:ss";
+        private TimeCodeWrapper timeMarkerStart;
+        private TimeCodeWrapper timeMarkerEnd;
 
         public MainWindow()
         {
@@ -42,23 +78,23 @@ namespace VideoTrimmer
                     Console.WriteLine("File passed through arguments has not been recognized.");
                 }
             }
+
+            // Create wrapper classes for Start and End markers
+            timeMarkerStart = new TimeCodeWrapper(timecodeStart, StartTimecodePickButton, jumpToStartMarkerButton, true);
+            timeMarkerEnd = new TimeCodeWrapper(timecodeEnd, EndTimecodePickButton, jumpToEndMarkerButton, false);
         }
 
         // Used to enable or disable editable fields
         private void SetFieldsLockStatus(bool NewLockStatus)
         {
             trimVideoButton.IsEnabled = NewLockStatus;
-            timecodeStart.IsEnabled = NewLockStatus;
-            timecodeEnd.IsEnabled = NewLockStatus;
             removeAudio.IsEnabled = NewLockStatus;
             recompressFile.IsEnabled = NewLockStatus;
             pauseAtEndMarker.IsEnabled = NewLockStatus;
-            jumpToStartMarkerButton.IsEnabled = NewLockStatus == false;
-            jumpToEndMarkerButton.IsEnabled = NewLockStatus == false;
             PlayPauseButton.IsEnabled = NewLockStatus;
             TimelineSlider.IsEnabled = NewLockStatus;
-            StartTimecodePickButton.IsEnabled = NewLockStatus;
-            EndTimecodePickButton.IsEnabled = NewLockStatus;
+            timeMarkerStart.SetLockStatus(NewLockStatus);
+            timeMarkerEnd.SetLockStatus(NewLockStatus);
 
             // if the form is unlocking then enable the recompression options depending on the checkbox value. If the form is locking, then just disable everything.
             if (NewLockStatus == true) RecompressFile_ValueChanged(null, null);
@@ -101,7 +137,7 @@ namespace VideoTrimmer
         private string GetStringFromTimeSpan(TimeSpan? timeSpan)
         {
             TimeSpan targetTimeSpan = timeSpan.HasValue ? timeSpan.Value : TimeSpan.FromSeconds(0.0);
-            return targetTimeSpan.ToString(timeFormat);
+            return targetTimeSpan.ToString(Globals.timeFormat);
         }
 
         // Analyzing a file selected via drag and dopping or using "Open File" dialog
@@ -182,47 +218,47 @@ namespace VideoTrimmer
             }
         }
 
-        private bool ValidateTimecodeTextBox(System.Windows.Controls.TextBox TimecodeTextBox)
+        private void ValidateTimeMarker(TimeCodeWrapper timeMarker)
         {
+            TimeSpan timeSpan;
+
             // check if a value is a valid TimeSpan
-            if (TimeSpan.TryParseExact(TimecodeTextBox.Text, timeFormat, null, out _))
+            if (TimeSpan.TryParseExact(timeMarker.TextBox.Text, Globals.timeFormat, null, out timeSpan))
             {
                 // check if the value is shorter or equal to FileDuration
-                if (TimeSpan.Parse(TimecodeTextBox.Text) <= videoProcessing.GetDuration())
+                if (TimeSpan.Parse(timeMarker.TextBox.Text) <= videoProcessing.GetDuration())
                 {
-                    // make sure that none of the TextBoxes is null
+                    // make sure that none of the TextBoxes is null (...wat)
                     if (timecodeStart == null | timecodeEnd == null)
                     {
                         // one of the fields has not been initialized, do nothing
-                        return false;
+                        return;
                     }
                     else
                     {
-                        // make sure the starting timecode is smaller than the ending timecode
-                        if (TimeSpan.Parse(timecodeStart.Text) < TimeSpan.Parse(timecodeEnd.Text))
+                        bool isStartTimecode = timeMarker == timeMarkerStart;
+
+                        if (IsTimeSpanValid(timeSpan, isStartTimecode))
                         {
                             // accept the value, but parse it to make sure the leading zeros are there
-                            TimecodeTextBox.Text = TimeSpan.Parse(TimecodeTextBox.Text).ToString();
-                            return true;
+                            timeMarker.SetTimeSpan(timeSpan);
+                            return;
                         }
                     }
                 }
             }
 
             // if everything failed -- undo editing field
-            _ = Dispatcher.BeginInvoke(new Action(() => TimecodeTextBox.Undo()));
+            _ = Dispatcher.BeginInvoke(new Action(() => timeMarker.TextBox.Undo()));
             System.Media.SystemSounds.Asterisk.Play();
-
-            return false;
         }
 
         // handles value change in timecode text boxes
         private void Timecode_LostFocus(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.TextBox senderTextBox = (System.Windows.Controls.TextBox)sender;
-            ValidateTimecodeTextBox(senderTextBox);
+            ValidateTimeMarker(senderTextBox == timeMarkerStart.TextBox ? timeMarkerStart : timeMarkerEnd);
         }
-
 
         // validates values in the DesiredFileSize text box
         private void DesiredFileSize_LostFocus(object sender, RoutedEventArgs e)
@@ -273,8 +309,9 @@ namespace VideoTrimmer
             }
 
             // establish Start and Duration for the needs of the console command
-            TimeSpan Start = TimeSpan.Parse(timecodeStart.Text);
-            TimeSpan End = TimeSpan.Parse(timecodeEnd.Text);
+            // TODO: Make sure these are valid, or fallback to start/end if unset?
+            TimeSpan Start = timeMarkerStart.CurrentTime.Value;
+            TimeSpan End = timeMarkerEnd.CurrentTime.Value;
 
             int DesiredFileSizeInt;
             Int32.TryParse(DesiredFileSize.Text, out DesiredFileSizeInt);
@@ -377,8 +414,13 @@ namespace VideoTrimmer
 
             UpdateCurrentTimeText(mediaPlayerClock.CurrentTime);
 
-            if (pauseAtEndMarker.IsChecked.HasValue && pauseAtEndMarker.IsChecked.Value && mediaPlayerClock.CurrentTime.Value >= TimeSpan.Parse(timecodeEnd.Text))
+            // Auto-pause video if checkbox is ticked.
+            if (timeMarkerEnd.CurrentTime.HasValue)
+            {
+                bool isPauseAtEndMarkerChecked = pauseAtEndMarker.IsChecked.HasValue && pauseAtEndMarker.IsChecked.Value;
+                if (isPauseAtEndMarkerChecked && mediaPlayerClock.CurrentTime.Value >= timeMarkerEnd.CurrentTime.Value)
                     mediaPlayerClock.Controller.Pause();
+            }
 
             bool videoEnd = mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
 
@@ -386,21 +428,15 @@ namespace VideoTrimmer
         }
 
         // User interaction - button clicked
-        private void OnJumpToStartMarkerButtonPressed(object sender, RoutedEventArgs e)
+        private void OnJumpToStartMarkerButtonPressed(object sender, RoutedEventArgs e) => JumpToMarker(timeMarkerStart);
+        private void OnJumpToEndMarkerButtonPressed(object sender, RoutedEventArgs e) => JumpToMarker(timeMarkerEnd);
+
+        private void JumpToMarker(TimeCodeWrapper timeMarker)
         {
             if (mediaPlayerTimeline.Source == null) return;
 
-            if (MediaPlayer.IsLoaded)
-                mediaPlayerClock.Controller.Seek(TimeSpan.Parse(timecodeStart.Text), TimeSeekOrigin.BeginTime);
-        }
-
-        // User interaction - button clicked
-        private void OnJumpToEndMarkerButtonPressed(object sender, RoutedEventArgs e)
-        {
-            if (mediaPlayerTimeline.Source == null) return;
-
-            if (MediaPlayer.IsLoaded)
-                mediaPlayerClock.Controller.Seek(TimeSpan.Parse(timecodeEnd.Text), TimeSeekOrigin.BeginTime);
+            if (MediaPlayer.IsLoaded && timeMarker.CurrentTime.HasValue)
+                mediaPlayerClock.Controller.Seek(timeMarker.CurrentTime.Value, TimeSeekOrigin.BeginTime);
         }
 
         // User interaction - button clicked
@@ -454,30 +490,24 @@ namespace VideoTrimmer
         {
             System.Windows.Controls.Button senderButton = (System.Windows.Controls.Button)sender;
 
-            System.Windows.Controls.TextBox TextBoxToUpdate;
-            System.Windows.Controls.Button ButtonToUpdate;
+            TimeCodeWrapper timeMarkerToUpdate = senderButton.Tag.ToString() == "Start" ? timeMarkerStart : timeMarkerEnd;
 
-            switch (senderButton.Tag.ToString())
-            {
-                case "Start":
-                    TextBoxToUpdate = timecodeStart;
-                    ButtonToUpdate = jumpToStartMarkerButton;
-                    break;
-                case "End":
-                    TextBoxToUpdate = timecodeEnd;
-                    ButtonToUpdate = jumpToEndMarkerButton;
-                    break;
-                default:
-                    Console.WriteLine("Couldn't identify textbox to update!");
-                    return;
-            }
+            TimeSpan newTimeSpan = mediaPlayerClock.CurrentTime.Value;
 
-            // get current media position and set it 
-            TextBoxToUpdate.Text = GetStringFromTimeSpan(mediaPlayerClock.CurrentTime);
+            // get current media position and set it
+            if (IsTimeSpanValid(newTimeSpan, timeMarkerToUpdate.IsStartMarker))
+                timeMarkerToUpdate.SetTimeSpan(newTimeSpan);
+        }
 
-            // attempt to set it as in timecode
-            bool didValidateTimecode = ValidateTimecodeTextBox(TextBoxToUpdate);
-            ButtonToUpdate.IsEnabled = didValidateTimecode;
+        private bool IsTimeSpanValid(TimeSpan? timeSpan, bool isStartTimeSpan)
+        {
+            if (!timeSpan.HasValue || timeSpan > videoProcessing.GetDuration())
+                return false;
+
+            if (isStartTimeSpan)
+                return !timeMarkerEnd.CurrentTime.HasValue || timeSpan < timeMarkerEnd.CurrentTime;
+
+            return !timeMarkerStart.CurrentTime.HasValue || timeSpan > timeMarkerStart.CurrentTime;
         }
 
         private void ClearKeyboardFocus(object sender, MouseButtonEventArgs e)

@@ -18,4 +18,5 @@ public static class Globals
 
     public static readonly string appOriginPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
+    public const string timeFormat = @"hh\:mm\:ss";
 }
