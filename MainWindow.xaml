@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VideoTrimmer"
         mc:Ignorable="d"
-        Title="Video Trimmer" Height="600" Width="430" ResizeMode="NoResize" Background="#FF212121" DragEnter="Window_DragEnter" DragLeave="Window_DragLeave" Drop="Window_DragDrop" AllowDrop="True" MouseDown="ClearKeyboardFocus">
+        Title="Video Trimmer" Height="633" Width="430" ResizeMode="NoResize" Background="#FF212121" DragEnter="Window_DragEnter" DragLeave="Window_DragLeave" Drop="Window_DragDrop" AllowDrop="True" MouseDown="ClearKeyboardFocus">
     <Grid Margin="30,20" MouseDown="ClearKeyboardFocus">
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
             <RowDefinition Height="320"/>
+            <RowDefinition Height="33"/>
             <RowDefinition Height="33"/>
             <RowDefinition />
             <RowDefinition Height="50"/>
@@ -52,10 +53,14 @@
             <TextBox x:Name="timecodeEnd" IsEnabled="False" Height="20" Text="00:00:00" Width="86"  LostFocus="Timecode_LostFocus" TextAlignment="Left" MaxLength="10" MaxLines="1" FontSize="18" HorizontalAlignment="Right" BorderBrush="{x:Null}" Margin="10,3,0,2" VerticalAlignment="Center" Padding="0,-2,0,0" HorizontalContentAlignment="Right" Template="{DynamicResource HyperlinkTextBoxTemplate}"/>
             <Button ToolTip="Use current position of the video player as End timecode" x:Name="EndTimecodePickButton" Content="◣" VerticalAlignment="Center" Width="20" Height="25" Click="OnTimecodePickButtonClicked" IsEnabled="False" Margin="0" Tag="End" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource HyperlinkButtonTemplate}" FontSize="18" />
         </StackPanel>
-        <Separator Grid.ColumnSpan="3" Height="2" Margin="0,6,0,0" Grid.Row="3" VerticalAlignment="Top"/>
+        <StackPanel Grid.Column="0" Grid.Row="3" Orientation="Horizontal" Grid.ColumnSpan="3">
+            <CheckBox Name="pauseAtEndMarker" ToolTipService.ShowOnDisabled="True" Content="Pause at end marker" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="Automatically pause when the end marker is reached." FontSize="14" Template="{DynamicResource CheckBoxControlTemplate}" Foreground="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"/>
+        </StackPanel>
+
+        <Separator Grid.ColumnSpan="3" Height="2" Margin="0,6,0,0" Grid.Row="4" VerticalAlignment="Top"/>
 
         <!-- options -->
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" VerticalAlignment="Center" Margin="0,12,0,25" Height="56">
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" VerticalAlignment="Center" Margin="0,12,0,25">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type CheckBox}">
                     <Setter Property="Foreground" Value="White"/>
@@ -69,7 +74,7 @@
             <CheckBox Name="removeAudio" ToolTipService.ShowOnDisabled="True" Content="Remove audio" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="The output video will not contain any audio streams." FontSize="14" Template="{DynamicResource CheckBoxControlTemplate}"/>
             <CheckBox Name="recompressFile" ToolTipService.ShowOnDisabled="True" Content="Recompress file" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="Trimming will take significantly more time, but will offer greater precision while trimming." Checked="RecompressFile_ValueChanged" Unchecked="RecompressFile_ValueChanged" FontSize="14" Template="{DynamicResource CheckBoxControlTemplate}" />
         </StackPanel>
-        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="3" VerticalAlignment="Center" Orientation="Horizontal" Margin="0,26,0,39" HorizontalAlignment="Right" Height="28" Width="217">
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="4" VerticalAlignment="Center" Orientation="Horizontal" Margin="0,26,0,39" HorizontalAlignment="Right" Height="28" Width="217">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Label}">
                     <Setter Property="Foreground" Value="White"/>
@@ -86,8 +91,8 @@
         </StackPanel>
 
         <!-- trim video button + about -->
-        <Button Name="trimVideoButton" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" Content="TRIM VIDEO" VerticalAlignment="Top" Click="ButtonTrimVideo_Click" Height="25" BorderBrush="{x:Null}" IsEnabled="False" UseLayoutRounding="False" FontSize="14" FontWeight="Bold" Template="{DynamicResource PrimaryActionButtonTemplate}" />
-        <Label Name="aboutFooter" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="281" Foreground="#26FFFFFF" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Right" FontSize="10" Height="23"/>
+        <Button Name="trimVideoButton" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5" Content="TRIM VIDEO" VerticalAlignment="Top" Click="ButtonTrimVideo_Click" Height="25" BorderBrush="{x:Null}" IsEnabled="False" UseLayoutRounding="False" FontSize="14" FontWeight="Bold" Template="{DynamicResource PrimaryActionButtonTemplate}" />
+        <Label Name="aboutFooter" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="281" Foreground="#26FFFFFF" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Right" FontSize="10" Height="23"/>
 
         <!-- The currently unused "About" button -->
         <!--<Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="42" Foreground="#19FFFFFF" FontSize="10" Cursor="Hand" Background="{x:Null}" BorderBrush="{x:Null}" Click="ButtonShowAbout_Click" />-->

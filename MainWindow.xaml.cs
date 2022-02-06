@@ -52,6 +52,7 @@ namespace VideoTrimmer
             timecodeEnd.IsEnabled = NewLockStatus;
             removeAudio.IsEnabled = NewLockStatus;
             recompressFile.IsEnabled = NewLockStatus;
+            pauseAtEndMarker.IsEnabled = NewLockStatus;
             jumpToStartMarkerButton.IsEnabled = NewLockStatus == false;
             jumpToEndMarkerButton.IsEnabled = NewLockStatus == false;
             PlayPauseButton.IsEnabled = NewLockStatus;
@@ -373,7 +374,15 @@ namespace VideoTrimmer
         private void MediaPlayerOnTimeChanged(object sender, EventArgs e)
         {
             if (SliderUpdatesPossible) TimelineSlider.Value = mediaPlayerClock.CurrentTime.Value.TotalMilliseconds;
+
             UpdateCurrentTimeText(mediaPlayerClock.CurrentTime);
+
+            if (pauseAtEndMarker.IsChecked.HasValue && pauseAtEndMarker.IsChecked.Value && mediaPlayerClock.CurrentTime.Value >= TimeSpan.Parse(timecodeEnd.Text))
+                    mediaPlayerClock.Controller.Pause();
+
+            bool videoEnd = mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
+
+            PlayPauseButton.Content = mediaPlayerClock.IsPaused || videoEnd ? "▶" : "❚❚";
         }
 
         // User interaction - button clicked
@@ -407,12 +416,10 @@ namespace VideoTrimmer
 
                 if (mediaPlayerClock.IsPaused || videoEnd)
                 {
-                    PlayPauseButton.Content = "❚❚";
                     mediaPlayerClock.Controller.Resume();
                 }
                 else
                 {
-                    PlayPauseButton.Content = "▶";
                     mediaPlayerClock.Controller.Pause();
                 }
             }
