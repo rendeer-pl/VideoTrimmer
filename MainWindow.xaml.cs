@@ -50,12 +50,14 @@ namespace VideoTrimmer
     {
         public MediaTimeline mediaPlayerTimeline = new MediaTimeline();
         public MediaClock mediaPlayerClock;
-        public bool SliderUpdatesPossible = true;
+        public bool sliderUpdatesPossible = true;
 
         public VideoProcessing videoProcessing = new VideoProcessing();
 
         private TimeCodeWrapper timeMarkerStart;
         private TimeCodeWrapper timeMarkerEnd;
+
+        private bool wasPlayingWhenSliderChanged;
 
         public MainWindow()
         {
@@ -129,11 +131,6 @@ namespace VideoTrimmer
             return;
         }
 
-        private void UpdateCurrentTimeText(TimeSpan? timeSpan)
-        {
-            timecodeCurrent.Text = GetStringFromTimeSpan(timeSpan);
-        }
-
         private string GetStringFromTimeSpan(TimeSpan? timeSpan)
         {
             TimeSpan targetTimeSpan = timeSpan.HasValue ? timeSpan.Value : TimeSpan.FromSeconds(0.0);
@@ -153,7 +150,6 @@ namespace VideoTrimmer
                 Console.WriteLine("Couldn't open file");
             }
 
-
             // Unlock editable fields
             SetFieldsLockStatus(true);
 
@@ -161,19 +157,20 @@ namespace VideoTrimmer
             timecodeStart.Text = GetStringFromTimeSpan(TimeSpan.FromSeconds(0.0));
             timecodeEnd.Text = GetStringFromTimeSpan(videoProcessing.GetDuration());
 
+            if (mediaPlayerClock != null)
+            {
+                mediaPlayerClock.CurrentTimeInvalidated -= MediaPlayerOnTimeChanged;
+                mediaPlayerClock.CurrentGlobalSpeedInvalidated -= MediaPlayerOnTimeChanged;
+            }
+
             mediaPlayerTimeline.Source = new Uri(videoProcessing.GetFilePath());
             mediaPlayerClock = mediaPlayerTimeline.CreateClock();
             MediaPlayer.Clock = mediaPlayerClock;
 
-            mediaPlayerClock.CurrentTimeInvalidated += delegate (object sender, EventArgs e)
-            {
-                MediaPlayerOnTimeChanged(sender, e);
-            };
-
-            mediaPlayerClock.Completed += delegate (object sender, EventArgs e)
-            {
-                PlayPauseButton.Content = "▶";
-            };
+            // If either of these callbacks are called, call the same function.
+            // CurrentTimeInvalidate isn't always called when the video is paused, so we need the other callback as well.
+            mediaPlayerClock.CurrentTimeInvalidated += MediaPlayerOnTimeChanged;
+            mediaPlayerClock.CurrentGlobalSpeedInvalidated += MediaPlayerOnTimeChanged;
 
             TimelineSlider.AddHandler(MouseLeftButtonUpEvent,
                       new MouseButtonEventHandler(SliderValueManuallyChanged),
@@ -410,9 +407,12 @@ namespace VideoTrimmer
         // This is the automatic update as video plays
         private void MediaPlayerOnTimeChanged(object sender, EventArgs e)
         {
-            if (SliderUpdatesPossible) TimelineSlider.Value = mediaPlayerClock.CurrentTime.Value.TotalMilliseconds;
+            if (sliderUpdatesPossible) TimelineSlider.Value = mediaPlayerClock.CurrentTime.Value.TotalMilliseconds;
 
-            UpdateCurrentTimeText(mediaPlayerClock.CurrentTime);
+            timecodeCurrent.Text = GetStringFromTimeSpan(mediaPlayerClock.CurrentTime);
+
+            bool videoEnd = mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
+            PlayPauseButton.Content = mediaPlayerClock.IsPaused || videoEnd ? "▶" : "❚❚";
 
             // Auto-pause video if checkbox is ticked.
             if (timeMarkerEnd.CurrentTime.HasValue)
@@ -421,10 +421,6 @@ namespace VideoTrimmer
                 if (isPauseAtEndMarkerChecked && mediaPlayerClock.CurrentTime.Value >= timeMarkerEnd.CurrentTime.Value)
                     mediaPlayerClock.Controller.Pause();
             }
-
-            bool videoEnd = mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
-
-            PlayPauseButton.Content = mediaPlayerClock.IsPaused || videoEnd ? "▶" : "❚❚";
         }
 
         // User interaction - button clicked
@@ -464,24 +460,29 @@ namespace VideoTrimmer
         // User clicked on the slider, so let's disable automatic slider updates
         private void SliderInteractionStarted(object sender, MouseButtonEventArgs e)
         {
-            SliderUpdatesPossible = false;
-        }
+            sliderUpdatesPossible = false;
 
-        private void SliderValueChanged(object sender, MouseButtonEventArgs e)
-        {
-            UpdateCurrentTimeText(mediaPlayerClock.CurrentTime);
+            if (!mediaPlayerClock.IsPaused)
+            {
+                wasPlayingWhenSliderChanged = true;
+                mediaPlayerClock.Controller.Pause();
+            }
         }
 
         // User finished interaction with the slider, let's update the video
         private void SliderValueManuallyChanged(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            bool wasPaused = mediaPlayerClock.IsPaused;
-            if (wasPaused == false) mediaPlayerClock.Controller.Pause();
-            int SliderValue = (int)TimelineSlider.Value;
-            TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
+            int sliderValue = (int)TimelineSlider.Value;
+            TimeSpan ts = new TimeSpan(0, 0, 0, 0, sliderValue);
             mediaPlayerClock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
-            if (wasPaused == false) mediaPlayerClock.Controller.Resume();
-            SliderUpdatesPossible = true;
+
+            sliderUpdatesPossible = true;
+
+            if (wasPlayingWhenSliderChanged)
+            {
+                mediaPlayerClock.Controller.Resume();
+                wasPlayingWhenSliderChanged = false;
+            }
         }
 
 
@@ -524,7 +525,6 @@ namespace VideoTrimmer
             {
                 float timePercentage = (float)(slider.Value / slider.Maximum);
                 TimeSpan timeSpan = TimeSpan.FromSeconds(mediaPlayerClock.NaturalDuration.TimeSpan.TotalSeconds * timePercentage);
-                UpdateCurrentTimeText(timeSpan);
             }
 
             // update media to show current frame
