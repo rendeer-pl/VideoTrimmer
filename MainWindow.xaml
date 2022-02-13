@@ -29,9 +29,9 @@
 
         <!-- video player -->
         <StackPanel Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="1" Orientation="Vertical" Grid.RowSpan="2">
-            <MediaElement x:Name="MediaPlayer" Height="360" VerticalAlignment="Center" LoadedBehavior="Manual" ScrubbingEnabled="True" MediaOpened="MediaPlayerOnMediaOpened" Margin="0" Width="640" />
+            <MediaElement x:Name="MediaPlayer" Height="360" VerticalAlignment="Center" LoadedBehavior="Manual" ScrubbingEnabled="True" MediaOpened="MediaPlayer_OnMediaOpened" Margin="0" Width="640" />
             <StackPanel>
-                <Slider x:Name="TimelineSlider" Margin="0" ScrollViewer.VerticalScrollBarVisibility="Disabled"  IsEnabled="False" HorizontalContentAlignment="Stretch" ValueChanged="TimelineSlider_ValueChanged" Value="-1" IsSelectionRangeEnabled="True" VerticalAlignment="Top"/>
+                <Slider x:Name="TimelineSlider" Margin="0" ScrollViewer.VerticalScrollBarVisibility="Disabled"  IsEnabled="False" HorizontalContentAlignment="Stretch" ValueChanged="SliderValueChanged" Value="-1" IsSelectionRangeEnabled="True" VerticalAlignment="Top"/>
                 <TextBox x:Name="timecodeCurrent" IsEnabled="False" Text="00:00:00" LostFocus="Timecode_LostFocus" MaxLength="12" MaxLines="1" FontSize="32" Margin="0,1,0,0" HorizontalAlignment="Center" BorderBrush="{x:Null}" VerticalAlignment="Center" Padding="0,-2,0,0" Template="{DynamicResource HyperlinkTextBoxTemplate}" TextAlignment="Center" />
             </StackPanel>
         </StackPanel>
