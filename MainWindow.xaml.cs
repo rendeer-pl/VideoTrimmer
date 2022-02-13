@@ -50,6 +50,8 @@ namespace VideoTrimmer
             // Create wrapper classes for Start and End markers
             timeMarkerStart = new TimeCodeWrapper(timecodeStart, StartTimecodePickButton, jumpToStartMarkerButton, true);
             timeMarkerEnd = new TimeCodeWrapper(timecodeEnd, EndTimecodePickButton, jumpToEndMarkerButton, false);
+
+            timecodeCurrent.Text = GetStringFromTimeSpan(null);
         }
 
         // Used to enable or disable editable fields
@@ -210,13 +212,6 @@ namespace VideoTrimmer
             // if everything failed -- undo editing field
             _ = Dispatcher.BeginInvoke(new Action(() => timeMarker.TextBox.Undo()));
             System.Media.SystemSounds.Asterisk.Play();
-        }
-
-        // handles value change in timecode text boxes
-        private void Timecode_LostFocus(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Controls.TextBox senderTextBox = (System.Windows.Controls.TextBox)sender;
-            ValidateTimeMarker(senderTextBox == timeMarkerStart.TextBox ? timeMarkerStart : timeMarkerEnd);
         }
 
         // validates values in the DesiredFileSize text box
@@ -430,7 +425,7 @@ namespace VideoTrimmer
         }
 
         // User wants to use current position of the video player as the Start or End timecode
-        private void OnTimecodePickButtonClicked(object sender, RoutedEventArgs e)
+        private void Timecode_PickButtonPressed(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.Button senderButton = (System.Windows.Controls.Button)sender;
 
@@ -441,6 +436,23 @@ namespace VideoTrimmer
             // get current media position and set it
             if (IsTimeSpanValid(newTimeSpan, timeMarkerToUpdate.IsStartMarker))
                 timeMarkerToUpdate.SetTimeSpan(newTimeSpan);
+        }
+
+        private void Timecode_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                System.Windows.Controls.TextBox senderTextBox = (System.Windows.Controls.TextBox)sender;
+                ValidateTimeMarker(senderTextBox == timeMarkerStart.TextBox ? timeMarkerStart : timeMarkerEnd);
+                Keyboard.ClearFocus();
+            }
+        }
+
+        // handles value change in timecode text boxes
+        private void Timecode_LostFocus(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.TextBox senderTextBox = (System.Windows.Controls.TextBox)sender;
+            ValidateTimeMarker(senderTextBox == timeMarkerStart.TextBox ? timeMarkerStart : timeMarkerEnd);
         }
 
         // User clicked on the slider, so let's disable automatic slider updates

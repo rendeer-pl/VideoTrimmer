@@ -32,14 +32,14 @@
             <MediaElement x:Name="MediaPlayer" Height="360" VerticalAlignment="Center" LoadedBehavior="Manual" ScrubbingEnabled="True" MediaOpened="MediaPlayer_OnMediaOpened" Margin="0" Width="640" />
             <StackPanel>
                 <Slider x:Name="TimelineSlider" Margin="0" ScrollViewer.VerticalScrollBarVisibility="Disabled"  IsEnabled="False" HorizontalContentAlignment="Stretch" ValueChanged="SliderValueChanged" Value="-1" IsSelectionRangeEnabled="True" VerticalAlignment="Top"/>
-                <TextBox x:Name="timecodeCurrent" IsEnabled="False" Text="00:00:00" LostFocus="Timecode_LostFocus" MaxLength="12" MaxLines="1" FontSize="32" Margin="0,1,0,0" HorizontalAlignment="Center" BorderBrush="{x:Null}" VerticalAlignment="Center" Padding="0,-2,0,0" Template="{DynamicResource HyperlinkTextBoxTemplate}" TextAlignment="Center" />
+                <TextBox x:Name="timecodeCurrent" IsEnabled="False" Text="00:00:00" MaxLength="12" MaxLines="1" FontSize="32" Margin="0,1,0,0" HorizontalAlignment="Center" BorderBrush="{x:Null}" VerticalAlignment="Center" Padding="0,-2,0,0" Template="{DynamicResource HyperlinkTextBoxTemplate}" TextAlignment="Center" />
             </StackPanel>
         </StackPanel>
 
         <!-- timecode inputs row -->
-        <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,1" HorizontalAlignment="Right" Width="127">
-            <Button ToolTip="Use current position of the video player as Start timecode" x:Name="StartTimecodePickButton" Content="◢" VerticalAlignment="Center" Click="OnTimecodePickButtonClicked" IsEnabled="False" Tag="Start" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource HyperlinkButtonTemplate}" FontSize="24" Margin="0" />
-            <TextBox x:Name="timecodeStart" IsEnabled="False" Text="00:00:00" LostFocus="Timecode_LostFocus" MaxLength="10" MaxLines="1" FontSize="24" Margin="0" HorizontalAlignment="Right" BorderBrush="{x:Null}" VerticalAlignment="Center" Padding="0" Template="{DynamicResource HyperlinkTextBoxTemplate}" />
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0" HorizontalAlignment="Right">
+            <Button ToolTip="Use current position of the video player as Start timecode" x:Name="StartTimecodePickButton" Content="◢" VerticalAlignment="Center" Click="Timecode_PickButtonPressed" IsEnabled="False" Tag="Start" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource HyperlinkButtonTemplate}" FontSize="24" Margin="0" />
+            <TextBox x:Name="timecodeStart" IsEnabled="False" Text="00:00:00:00" LostFocus="Timecode_LostFocus" KeyDown="Timecode_KeyDown" MaxLength="10" MaxLines="1" FontSize="24" Margin="0" HorizontalAlignment="Right" BorderBrush="{x:Null}" VerticalAlignment="Center" Padding="0" Template="{DynamicResource HyperlinkTextBoxTemplate}"/>
         </StackPanel>
         <!--<Button Grid.Column="1" Grid.Row="2"  x:Name="PlayPauseButton" Content="▶" VerticalAlignment="Top" Height="25" Click="OnPlayPauseButtonClicked" IsEnabled="False" Template="{DynamicResource HyperlinkButtonTemplate}" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="18" Margin="50,0" />-->
         <Grid Grid.Column="1" Grid.Row="2" Margin="0">
@@ -49,9 +49,9 @@
                 <Button x:Name="jumpToEndMarkerButton" Content="⮕" VerticalAlignment="Center" Click="OnJumpToEndMarkerButtonPressed" IsEnabled="False" Template="{DynamicResource HyperlinkButtonTemplate}" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="32" ToolTip="Go to end marker" />
             </StackPanel>
         </Grid>
-        <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Width="127">
-            <TextBox x:Name="timecodeEnd" IsEnabled="False" Text="00:00:00"  LostFocus="Timecode_LostFocus" TextAlignment="Left" MaxLength="10" MaxLines="1" FontSize="24" HorizontalAlignment="Right" BorderBrush="{x:Null}" Margin="0" VerticalAlignment="Center" Padding="0" HorizontalContentAlignment="Right" Template="{DynamicResource HyperlinkTextBoxTemplate}"/>
-            <Button ToolTip="Use current position of the video player as End timecode" x:Name="EndTimecodePickButton" Content="◣" VerticalAlignment="Center" Click="OnTimecodePickButtonClicked" IsEnabled="False" Margin="0" Tag="End" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource HyperlinkButtonTemplate}" FontSize="24" />
+        <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
+            <TextBox x:Name="timecodeEnd" IsEnabled="False" Text="00:00:00:00"  LostFocus="Timecode_LostFocus" KeyDown="Timecode_KeyDown" TextAlignment="Left" MaxLength="10" MaxLines="1" FontSize="24" HorizontalAlignment="Right" BorderBrush="{x:Null}" Margin="0" VerticalAlignment="Center" Padding="0" HorizontalContentAlignment="Right" Template="{DynamicResource HyperlinkTextBoxTemplate}"/>
+            <Button ToolTip="Use current position of the video player as End timecode" x:Name="EndTimecodePickButton" Content="◣" VerticalAlignment="Center" Click="Timecode_PickButtonPressed" IsEnabled="False" Margin="0" Tag="End" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource HyperlinkButtonTemplate}" FontSize="24" />
         </StackPanel>
         <StackPanel Grid.Column="0" Grid.Row="3" Orientation="Horizontal" Grid.ColumnSpan="3">
             <CheckBox Name="pauseAtEndMarker" ToolTipService.ShowOnDisabled="True" Content="Pause at end marker" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="Automatically pause when the end marker is reached." FontSize="14" Template="{DynamicResource CheckBoxControlTemplate}" Foreground="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"/>
