@@ -51,7 +51,7 @@ namespace VideoTrimmer
             timeMarkerStart = new TimeCodeWrapper(timecodeStart, StartTimecodePickButton, jumpToStartMarkerButton, true);
             timeMarkerEnd = new TimeCodeWrapper(timecodeEnd, EndTimecodePickButton, jumpToEndMarkerButton, false);
 
-            timecodeCurrent.Text = GetStringFromTimeSpan(null);
+            timecodeCurrent.Text = GetStringFromTimeSpan(TimeSpan.Zero);
         }
 
         // Used to enable or disable editable fields
@@ -91,8 +91,8 @@ namespace VideoTrimmer
         {
             fileNameLabel.Content = "No video selected";
             fileNameLabel.ToolTip = "No video selected";
-            timecodeStart.Text = GetStringFromTimeSpan(TimeSpan.FromSeconds(0.0));
-            timecodeEnd.Text = GetStringFromTimeSpan(TimeSpan.FromSeconds(0.0));
+            timecodeStart.Text = GetStringFromTimeSpan(TimeSpan.Zero);
+            timecodeEnd.Text = GetStringFromTimeSpan(TimeSpan.Zero);
             videoProcessing = new VideoProcessing();
             SetFieldsLockStatus(false);
 
@@ -116,7 +116,7 @@ namespace VideoTrimmer
             SetFieldsLockStatus(true);
 
             // Get video duration and paste it into "End" timecode TextBox
-            timecodeStart.Text = GetStringFromTimeSpan(TimeSpan.FromSeconds(0.0));
+            timecodeStart.Text = GetStringFromTimeSpan(TimeSpan.Zero);
             timecodeEnd.Text = GetStringFromTimeSpan(videoProcessing.GetDuration());
 
             if (mediaPlayerClock != null)
@@ -435,7 +435,13 @@ namespace VideoTrimmer
 
             // get current media position and set it
             if (IsTimeSpanValid(newTimeSpan, timeMarkerToUpdate.IsStartMarker))
+            {
                 timeMarkerToUpdate.SetTimeSpan(newTimeSpan);
+            }
+            else
+            {
+                System.Media.SystemSounds.Asterisk.Play();
+            }
         }
 
         private void Timecode_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
