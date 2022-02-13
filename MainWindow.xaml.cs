@@ -121,8 +121,8 @@ namespace VideoTrimmer
 
             if (mediaPlayerClock != null)
             {
-                mediaPlayerClock.CurrentTimeInvalidated -= MediaPlayer_OnTimeChanged;
-                mediaPlayerClock.CurrentGlobalSpeedInvalidated -= MediaPlayer_OnTimeChanged;
+                mediaPlayerClock.CurrentTimeInvalidated -= MediaPlayer_TimeChanged;
+                mediaPlayerClock.CurrentGlobalSpeedInvalidated -= MediaPlayer_TimeChanged;
             }
 
             cachedMediaVolume = MediaPlayer.Volume;
@@ -133,14 +133,14 @@ namespace VideoTrimmer
 
             // If either of these callbacks are called, call the same function.
             // CurrentTimeInvalidate isn't always called when the video is paused, so we need the other callback as well.
-            mediaPlayerClock.CurrentTimeInvalidated += MediaPlayer_OnTimeChanged;
-            mediaPlayerClock.CurrentGlobalSpeedInvalidated += MediaPlayer_OnTimeChanged;
+            mediaPlayerClock.CurrentTimeInvalidated += MediaPlayer_TimeChanged;
+            mediaPlayerClock.CurrentGlobalSpeedInvalidated += MediaPlayer_TimeChanged;
 
             TimelineSlider.AddHandler(MouseLeftButtonUpEvent,
-                      new MouseButtonEventHandler(SliderInteractionFinished),
+                      new MouseButtonEventHandler(Slider_InteractionFinished),
                       true);
             TimelineSlider.AddHandler(MouseLeftButtonDownEvent,
-                      new MouseButtonEventHandler(SliderInteractionStarted),
+                      new MouseButtonEventHandler(Slider_InteractionStarted),
                       true);
 
             // If file path is long, trim it
@@ -362,7 +362,7 @@ namespace VideoTrimmer
         }
 
         // This is updated when the timeline is changed.
-        private void MediaPlayer_OnTimeChanged(object sender, EventArgs e)
+        private void MediaPlayer_TimeChanged(object sender, EventArgs e)
         {
             // Prevent audio popping if the slider is being manually moved.
             MediaPlayer.Volume = isManipulatingTimelineSlider ? 0.0 : cachedMediaVolume;
@@ -391,8 +391,8 @@ namespace VideoTrimmer
         }
 
         // User interaction - button clicked
-        private void OnJumpToStartMarkerButtonPressed(object sender, RoutedEventArgs e) => JumpToMarker(timeMarkerStart);
-        private void OnJumpToEndMarkerButtonPressed(object sender, RoutedEventArgs e) => JumpToMarker(timeMarkerEnd);
+        private void JumpToStartMarker_ButtonPressed(object sender, RoutedEventArgs e) => JumpToMarker(timeMarkerStart);
+        private void JumpToEndMarker_ButtonPressed(object sender, RoutedEventArgs e) => JumpToMarker(timeMarkerEnd);
 
         private void JumpToMarker(TimeCodeWrapper timeMarker)
         {
@@ -403,7 +403,7 @@ namespace VideoTrimmer
         }
 
         // User interaction - button clicked
-        private void OnPlayPauseButtonClicked(object sender, RoutedEventArgs e)
+        private void PlayPause_ButtonPressed(object sender, RoutedEventArgs e)
         {
             if (mediaPlayerTimeline.Source == null) return;
 
@@ -456,7 +456,7 @@ namespace VideoTrimmer
         }
 
         // User clicked on the slider, so let's disable automatic slider updates
-        private void SliderInteractionStarted(object sender, MouseButtonEventArgs e)
+        private void Slider_InteractionStarted(object sender, MouseButtonEventArgs e)
         {
             isManipulatingTimelineSlider = true;
 
@@ -468,7 +468,7 @@ namespace VideoTrimmer
         }
 
         // User changed the slider value.
-        private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             // Early out if slider was moved automatically due to video playback.
             if (!isManipulatingTimelineSlider)
@@ -480,7 +480,7 @@ namespace VideoTrimmer
         }
 
         // User finished interaction with the slider.
-        private void SliderInteractionFinished(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Slider_InteractionFinished(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (wasPlayingWhenSliderChanged)
             {
