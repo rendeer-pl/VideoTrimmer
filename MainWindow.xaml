@@ -5,13 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VideoTrimmer"
         mc:Ignorable="d"
-        Title="Video Trimmer" Height="600" Width="430" ResizeMode="NoResize" Background="#FF212121" DragEnter="Window_DragEnter" DragLeave="Window_DragLeave" Drop="Window_DragDrop" AllowDrop="True" MouseDown="ClearKeyboardFocus">
+        Title="Video Trimmer" Height="655" Width="630" Background="#FF212121" DragEnter="Window_DragEnter" DragLeave="Window_DragLeave" Drop="Window_DragDrop" AllowDrop="True" MouseDown="ClearKeyboardFocus" MinWidth="430" MinHeight="600" ResizeMode="CanResizeWithGrip">
+
     <Grid Margin="30,20" MouseDown="ClearKeyboardFocus">
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
-            <RowDefinition Height="300"/>
+            <RowDefinition MinHeight="250"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="30"/>
-            <RowDefinition />
+            <RowDefinition Height="100"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -27,27 +29,41 @@
         </StackPanel>
 
         <!-- video player -->
-        <StackPanel Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="1" Orientation="Vertical" Grid.RowSpan="2">
-            <MediaElement x:Name="MediaPlayer" Height="275" VerticalAlignment="Center" Width="360" LoadedBehavior="Manual" ScrubbingEnabled="True" MediaOpened="MediaPlayerOnMediaOpened" Margin="0,0,0,5" />
-            <StackPanel Orientation="Horizontal">
-                <Slider x:Name="TimelineSlider" Margin="0" VerticalAlignment="Top" Height="22" ScrollViewer.VerticalScrollBarVisibility="Disabled"  IsEnabled="False" Width="355" HorizontalContentAlignment="Stretch" />
-            </StackPanel>
-        </StackPanel>
+        <Grid Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="1"  Name="MediaPlayerContainer" >
+            <Rectangle>
+                <Rectangle.Fill>
+                    <LinearGradientBrush EndPoint="362,264" SpreadMethod="Repeat" MappingMode="Absolute">
+                        <GradientStop Offset="0" Color="#00000000"/>
+                        <GradientStop Offset="0.8" Color="#00000000"/>
+                        <GradientStop Offset="0.8" Color="#FF2C2C2C"/>
+                        <GradientStop Offset="1" Color="#FF2C2C2C"/>
+                        <LinearGradientBrush.Transform>
+                            <ScaleTransform ScaleX="0.025" ScaleY="0.025">
+                            </ScaleTransform>
+                        </LinearGradientBrush.Transform>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <MediaElement x:Name="MediaPlayer" MinHeight="250" MinWidth="360" LoadedBehavior="Manual" ScrubbingEnabled="True" MediaOpened="MediaPlayerOnMediaOpened" Margin="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Center" VerticalAlignment="Center"  />
+        </Grid>
+
+        <!-- timeline -->
+        <Slider x:Name="TimelineSlider" Margin="0" Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="2" Height="22" IsEnabled="False" MinWidth="355" HorizontalAlignment="Stretch"></Slider>
 
         <!-- timecode inputs row -->
-        <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Top">
+        <StackPanel Grid.Column="0" Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Top">
             <Button ToolTip="Use current position of the video player as Start timecode" x:Name="StartTimecodePickButton" Content="◢" VerticalAlignment="Center" Width="20" Height="25" Click="OnTimecodePickButtonClicked" IsEnabled="False" Tag="Start" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource HyperlinkButtonTemplate}" FontSize="18" Margin="0" />
             <TextBox x:Name="timecodeStart" IsEnabled="False" Text="00:00:00" Width="80" LostFocus="Timecode_LostFocus" MaxLength="8" MaxLines="1" FontSize="18" Margin="0,1,10,0" HorizontalAlignment="Left" BorderBrush="{x:Null}" VerticalAlignment="Center" Height="20" Padding="0,-2,0,0" Template="{DynamicResource HyperlinkTextBoxTemplate}" />
         </StackPanel>
-        <Button Grid.Column="1" Grid.Row="2"  x:Name="PlayPauseButton" Content="▶" VerticalAlignment="Top" Width="22" Height="25" Click="OnPlayPauseButtonClicked" IsEnabled="False" Template="{DynamicResource HyperlinkButtonTemplate}" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="18" />
-        <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+        <Button Grid.Column="1" Grid.Row="3"  x:Name="PlayPauseButton" Content="▶" VerticalAlignment="Top" Width="22" Height="25" Click="OnPlayPauseButtonClicked" IsEnabled="False" Template="{DynamicResource HyperlinkButtonTemplate}" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="18" Margin="49,0,50,0" />
+        <StackPanel Grid.Column="2" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
             <TextBox Name="timecodeEnd" IsEnabled="False" Height="20" Text="00:00:00" Width="80"  LostFocus="Timecode_LostFocus" TextAlignment="Right" MaxLength="8" MaxLines="1" FontSize="18" HorizontalAlignment="Right" BorderBrush="{x:Null}" Margin="10,1,0,0" VerticalAlignment="Center" Padding="0,-2,0,0" HorizontalContentAlignment="Right" Template="{DynamicResource HyperlinkTextBoxTemplate}"/>
             <Button ToolTip="Use current position of the video player as End timecode" x:Name="EndTimecodePickButton" Content="◣" VerticalAlignment="Center" Width="20" Height="25" Click="OnTimecodePickButtonClicked" IsEnabled="False" Margin="0" Tag="End" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource HyperlinkButtonTemplate}" FontSize="18" />
         </StackPanel>
-        <Separator Grid.ColumnSpan="3" Height="2" Margin="0,6,0,0" Grid.Row="3" VerticalAlignment="Top"/>
+        <Separator Grid.ColumnSpan="3" Height="2" Margin="0,6,0,0" Grid.Row="4" VerticalAlignment="Top"/>
 
         <!-- options -->
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" VerticalAlignment="Center" Margin="0,33,0,27">
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" VerticalAlignment="Center" Margin="0,32,0,26">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type CheckBox}">
                     <Setter Property="Foreground" Value="White"/>
@@ -61,7 +77,7 @@
             <CheckBox Name="removeAudio" ToolTipService.ShowOnDisabled="True" Content="Remove audio" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="The output video will not contain any audio streams." FontSize="14" Template="{DynamicResource CheckBoxControlTemplate}"/>
             <CheckBox Name="recompressFile" ToolTipService.ShowOnDisabled="True" Content="Recompress file" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="Trimming will take significantly more time, but will offer greater precision while trimming." Checked="RecompressFile_ValueChanged" Unchecked="RecompressFile_ValueChanged" FontSize="14" Template="{DynamicResource CheckBoxControlTemplate}" />
         </StackPanel>
-        <StackPanel Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3" VerticalAlignment="Center" Orientation="Horizontal" Margin="0,47,0,41" HorizontalAlignment="Right">
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="4" VerticalAlignment="Center" Orientation="Horizontal" Margin="0,47,0,41" HorizontalAlignment="Right">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Label}">
                     <Setter Property="Foreground" Value="White"/>
@@ -78,8 +94,8 @@
         </StackPanel>
 
         <!-- trim video button + about -->
-        <Button Name="trimVideoButton" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" Content="TRIM VIDEO" VerticalAlignment="Top" Click="ButtonTrimVideo_Click" Height="25" BorderBrush="{x:Null}" IsEnabled="False" UseLayoutRounding="False" FontSize="14" FontWeight="Bold" Template="{DynamicResource PrimaryActionButtonTemplate}" />
-        <Label Name="aboutFooter" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="281" Foreground="#26FFFFFF" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Right" FontSize="10"/>
+        <Button Name="trimVideoButton" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5" Content="TRIM VIDEO" VerticalAlignment="Top" Click="ButtonTrimVideo_Click" Height="25" BorderBrush="{x:Null}" IsEnabled="False" UseLayoutRounding="False" FontSize="14" FontWeight="Bold" Template="{DynamicResource PrimaryActionButtonTemplate}" />
+        <Label Name="aboutFooter" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="281" Foreground="#26FFFFFF" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Right" FontSize="10"/>
 
         <!-- The currently unused "About" button -->
         <!--<Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="42" Foreground="#19FFFFFF" FontSize="10" Cursor="Hand" Background="{x:Null}" BorderBrush="{x:Null}" Click="ButtonShowAbout_Click" />-->
