@@ -130,6 +130,8 @@ namespace VideoTrimmer
                       new MouseButtonEventHandler(SliderInteractionStarted),
                       true);
 
+            UpdateRange();
+
             // If file path is long, trim it
             String FileNameToDisplay = "";
             if (videoProcessing.GetFilePath().Length > 40) FileNameToDisplay = videoProcessing.GetFileRoot() + "...\\" + videoProcessing.GetFileName();
@@ -166,6 +168,14 @@ namespace VideoTrimmer
             }
         }
 
+        private void UpdateRange()
+        {
+            TimelineSlider.SelectionStart = TimeSpan.Parse(timecodeStart.Text).TotalMilliseconds;
+            TimelineSlider.SelectionEnd = TimeSpan.Parse(timecodeEnd.Text).TotalMilliseconds;
+
+            return;
+        }
+
         private void ValidateTimecodeTextBox(System.Windows.Controls.TextBox TimecodeTextBox)
         {
             // check if a value is a valid TimeSpan
@@ -187,6 +197,8 @@ namespace VideoTrimmer
                         {
                             // accept the value, but parse it to make sure the leading zeros are there
                             TimecodeTextBox.Text = TimeSpan.Parse(TimecodeTextBox.Text).ToString();
+                            UpdateRange();
+
                             return;
                         }
                     }

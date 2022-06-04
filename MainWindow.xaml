@@ -48,7 +48,7 @@
         </Grid>
 
         <!-- timeline -->
-        <Slider x:Name="TimelineSlider" Margin="0" Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="2" Height="22" IsEnabled="False" MinWidth="355" HorizontalAlignment="Stretch"></Slider>
+        <Slider x:Name="TimelineSlider" Margin="0" Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="2" Height="30" IsEnabled="False" MinWidth="355" HorizontalAlignment="Stretch" IsSelectionRangeEnabled="True" Style="{DynamicResource TimelineSlider}"/>
 
         <!-- timecode inputs row -->
         <StackPanel Grid.Column="0" Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Top">
@@ -60,7 +60,6 @@
             <TextBox Name="timecodeEnd" IsEnabled="False" Height="20" Text="00:00:00" Width="80"  LostFocus="Timecode_LostFocus" TextAlignment="Right" MaxLength="8" MaxLines="1" FontSize="18" HorizontalAlignment="Right" BorderBrush="{x:Null}" Margin="10,1,0,0" VerticalAlignment="Center" Padding="0,-2,0,0" HorizontalContentAlignment="Right" Template="{DynamicResource HyperlinkTextBoxTemplate}"/>
             <Button ToolTip="Use current position of the video player as End timecode" x:Name="EndTimecodePickButton" Content="◣" VerticalAlignment="Center" Width="20" Height="25" Click="OnTimecodePickButtonClicked" IsEnabled="False" Margin="0" Tag="End" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource HyperlinkButtonTemplate}" FontSize="18" />
         </StackPanel>
-        <Separator Grid.ColumnSpan="3" Height="2" Margin="0,6,0,0" Grid.Row="4" VerticalAlignment="Top"/>
 
         <!-- options -->
         <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" VerticalAlignment="Center" Margin="0,32,0,26">
