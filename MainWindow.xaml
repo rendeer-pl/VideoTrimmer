@@ -94,9 +94,7 @@
 
         <!-- trim video button + about -->
         <Button Name="trimVideoButton" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5" Content="TRIM VIDEO" VerticalAlignment="Top" Click="ButtonTrimVideo_Click" Height="25" BorderBrush="{x:Null}" IsEnabled="False" UseLayoutRounding="False" FontSize="14" FontWeight="Bold" Template="{DynamicResource PrimaryActionButtonTemplate}" />
-        <Label Name="aboutFooter" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="281" Foreground="#26FFFFFF" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Right" FontSize="10"/>
-
-        <!-- The currently unused "About" button -->
-        <!--<Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="42" Foreground="#19FFFFFF" FontSize="10" Cursor="Hand" Background="{x:Null}" BorderBrush="{x:Null}" Click="ButtonShowAbout_Click" />-->
+        <Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5" Content="About" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="42" Click="ButtonShowAbout_Click" Template="{DynamicResource HyperlinkButtonTemplate}" />
+        
     </Grid>
 </Window>

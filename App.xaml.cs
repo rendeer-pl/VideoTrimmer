@@ -12,21 +12,6 @@ namespace VideoTrimmer
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            // Checking for updates
-            /*
-            try
-            {
-                string version = Globals.customVersion;
-                WebClient client = new WebClient();
-                string newestVersion = client.DownloadString("https://rendeer.pl/VideoTrimmer/updates.php?v=" + version);
-                Console.WriteLine("Newest available version: " + newestVersion);
-            }
-            catch
-            {
-                // Update server didn't respond but that's ok
-                Console.WriteLine("Update server didn't respond.");
-            }
-            */
 
             // Build the window title
             string windowTitle = Globals.appTitle;

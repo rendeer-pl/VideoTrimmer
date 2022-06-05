@@ -1,0 +1,41 @@
+﻿<Window x:Class="VideoTrimmer.About"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VideoTrimmer"
+        mc:Ignorable="d"
+        Title="About Video Trimmer" Height="300" Width="500" Background="#FF212121">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="120
+                           *" />
+            <RowDefinition Height="141*" />
+        </Grid.RowDefinitions>
+
+        <Image Source="VideoTrimmerIcon.ico" Grid.Column="0" Grid.Row="0" Width="80" Height="80" VerticalAlignment="Top" />
+        <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="0">
+            <Label Foreground="White" FontSize="20" FontFamily="Segoe UI Semibold">Video Trimmer</Label>
+            <WrapPanel>
+                <Label Foreground="White" Padding="5,5,4,0">Version</Label>
+                <Label Foreground="White" Name="VersionNumber" Padding="0,5,0,0">VERSION.NUMBER</Label>
+                <Button Click="ButtonChangelist_Click" Padding="5,5,5,0" Template="{DynamicResource HyperlinkButtonTemplate}" Margin="0,0,0,0">What's new?</Button>
+            </WrapPanel>
+            <Button Click="ButtonUpdates_Click" Template="{DynamicResource HyperlinkButtonTemplate}" Padding="5" HorizontalAlignment="Left">Check for updates</Button>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" >
+            <Button Click="ButtonWebpage_Click" Template="{DynamicResource HyperlinkButtonTemplate}" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Padding="5" Margin="0,0,0,15" FontSize="14">https://soft.rendeer.pl/VideoTrimmer/</Button>
+            <TextBlock Foreground="White" HorizontalAlignment="Center" TextWrapping="Wrap"><Run Text="Thank you for using the Video Trimmer! If you want to help improve it, please consider getting involved with its development. See the"/><Button Click="ButtonContribtion_Click" Template="{DynamicResource HyperlinkButtonTemplate}" Margin="5,-10,0,-3" Padding="0,0" BorderThickness="0">Contribution Guide</Button>.</TextBlock>
+        </StackPanel>
+        <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Label Foreground="White" VerticalContentAlignment="Stretch" Padding="5,5,0,5">This software is released under the </Label>
+            <Button Click="ButtonLincense_Click" Margin="4,0,0,0" Padding="0,5" Template="{DynamicResource HyperlinkButtonTemplate}">MIT license</Button>
+            <Label Foreground="White" VerticalContentAlignment="Stretch" Padding="0,5">.</Label>
+        </DockPanel>
+    </Grid>
+
+</Window>

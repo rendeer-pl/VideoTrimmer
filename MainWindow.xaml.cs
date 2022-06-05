@@ -23,9 +23,6 @@ namespace VideoTrimmer
         {
             InitializeComponent();
 
-            // Updating the "About" footer
-            aboutFooter.Content = Globals.company + " " + Globals.customVersion;
-
             // Checking if there is a file path passed through command line arguments (e.g. "Open with...")
             string[] arguments = Environment.GetCommandLineArgs();
             if (arguments.Length>1) {
@@ -287,17 +284,12 @@ namespace VideoTrimmer
         }
 
         // Displays "About" window
-        // TODO: Add custom "About" window
         public void ButtonShowAbout_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            // CURRENTLY UNUSED
-            string Text;
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-
-            Text = "Rendeer " + version.Major + "." + version.Minor + ".190512";
-            System.Windows.Forms.MessageBox.Show(Text);
-            */
+            About aboutWindow = new About();
+            aboutWindow.Owner = this;
+            aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            aboutWindow.ShowDialog();
         }
 
         // Fired whenever an object is dragged over the app window
