@@ -10,7 +10,7 @@
         <Label Name="Caption" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,0,0,0" Content="Trimming..." Foreground="White" Width="406" FontSize="14" />
         <ProgressBar Name="ProgressBar" HorizontalAlignment="Center" Height="22" Margin="0,30,0,0" VerticalAlignment="Top" Width="390" IsEnabled="False" FontSize="14" Padding="0,-2,0,0" Template="{DynamicResource ProgressBarControlTemplate}" />
         <Label Name="ProgressValue" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,28,0,0" Content="0%" Foreground="Black" Visibility="Hidden" />
-        <Button Name="CommandButton" Content="Copy command to clipboard" Width="Auto"  Foreground="#FF00AEFF" HorizontalAlignment="Right" VerticalAlignment="Top"  Margin="0,55,30,0" Background="{x:Null}" HorizontalContentAlignment="Right" TabIndex="2" BorderBrush="{x:Null}" Click="CommandButton_ClickAsync" Visibility="Hidden" />
+        <Button Name="CommandButton" Content="Copy command to clipboard" Width="Auto"  HorizontalAlignment="Right" VerticalAlignment="Top"  Margin="0,55,30,0" HorizontalContentAlignment="Right" TabIndex="2" Template="{DynamicResource HyperlinkButtonTemplate}" Click="CommandButton_ClickAsync" Visibility="Hidden" />
         <Label Name="Message" Content="" Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,76,0,0" Foreground="White" Width="397" MaxWidth="408"  />
         <Button Name="AbortButton" Content="CANCEL" VerticalAlignment="Bottom" FontWeight="Bold" Height="25" IsEnabled="True" HorizontalAlignment="Center" Margin="0,0,0,5" Width="390" Click="AbortButton_Click" TabIndex="1" Template="{DynamicResource PrimaryActionButtonTemplate}" />
     </Grid>
