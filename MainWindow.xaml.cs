@@ -412,8 +412,8 @@ namespace VideoTrimmer
         // User finished interaction with the slider, let's update the video
         private void SliderValueManuallyChanged(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            bool wasPaused = mediaPlayerClock.IsPaused;
-            if (wasPaused == false) mediaPlayerClock.Controller.Pause();
+            bool wasPaused = mediaPlayerClock.IsPaused || mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
+            mediaPlayerClock.Controller.Pause();
             int SliderValue = (int)TimelineSlider.Value;
             TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
             mediaPlayerClock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
