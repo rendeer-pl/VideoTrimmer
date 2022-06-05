@@ -265,6 +265,9 @@ namespace VideoTrimmer
                 return;
             }
 
+            // pause the current playback
+            PausePlayback();
+
             // establish Start and Duration for the needs of the console command
             TimeSpan Start = TimeSpan.Parse(timecodeStart.Text);
             TimeSpan End = TimeSpan.Parse(timecodeEnd.Text);
@@ -286,6 +289,7 @@ namespace VideoTrimmer
         // Displays "About" window
         public void ButtonShowAbout_Click(object sender, RoutedEventArgs e)
         {
+            PausePlayback();
             About aboutWindow = new About();
             aboutWindow.Owner = this;
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -377,15 +381,26 @@ namespace VideoTrimmer
 
                 if (mediaPlayerClock.IsPaused || videoEnd)
                 {
-                    PlayPauseButton.Content = "❚❚";
-                    mediaPlayerClock.Controller.Resume();
+                    ResumePlayback();
                 }
                 else
                 {
-                    PlayPauseButton.Content = "▶";
-                    mediaPlayerClock.Controller.Pause();
+                    PausePlayback();
                 }
             }
+        }
+
+        private void PausePlayback()
+        {
+            PlayPauseButton.Content = "▶";
+
+            if (mediaPlayerTimeline.Source != null) mediaPlayerClock.Controller.Pause();
+        }
+
+        private void ResumePlayback()
+        {
+            PlayPauseButton.Content = "❚❚";
+            mediaPlayerClock.Controller.Resume();
         }
 
          // User clicked on the slider, so let's disable automatic slider updates
