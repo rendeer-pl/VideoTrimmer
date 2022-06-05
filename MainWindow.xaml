@@ -24,8 +24,10 @@
 
         <!-- file info row -->
         <StackPanel Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
-            <Button Content="Select video" Width="90" Click="ButtonFileOpen_Click" Margin="0,0,0,10" Height="25" BorderBrush="{x:Null}" FontSize="14" Template="{DynamicResource FilePickerButtonTemplate}"/>
-            <Label Name="fileNameLabel" Content="No video selected" Margin="10,-2,0,10" Foreground="White" HorizontalAlignment="Left" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" AutomationProperties.IsOffscreenBehavior="Onscreen" ToolTip="No video selected" FontSize="14" UseLayoutRounding="False"/>
+            <Button Name="ButtonFilePicker" Content="Select video" Width="90" Click="ButtonFileOpen_Click" Margin="0,0,10,10" Height="25" FontSize="14" Template="{DynamicResource PrimaryActionButtonTemplate}">
+            </Button>
+            <Label Name="FileNameLabel" Content="No video selected" Margin="0,-2,0,10" Foreground="White" HorizontalAlignment="Left" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" AutomationProperties.IsOffscreenBehavior="Onscreen" ToolTip="No video selected" FontSize="14" UseLayoutRounding="False"/>
+            <Button Name="ButtonCloseFile" Template="{DynamicResource HyperlinkButtonTemplate}" Click="ButtonCloseFile_Click" FontFamily="Segoe UI Emoji" VerticalAlignment="Top" Margin="0,3,0,-0.3" Visibility="Collapsed">❌</Button>
         </StackPanel>
 
         <!-- video player -->

@@ -75,23 +75,33 @@ namespace VideoTrimmer
         // Reset window to state without file selected
         private void ResetFilePicker()
         {
-            fileNameLabel.Content = "No video selected";
-            fileNameLabel.ToolTip = "No video selected";
+            MediaPlayer.Source = null;
+            mediaPlayerTimeline = new MediaTimeline();
+            MediaPlayer.Visibility = Visibility.Collapsed;
+            FileNameLabel.Content = "No video selected";
+            FileNameLabel.ToolTip = "No video selected";
             timecodeStart.Text = "00:00:00";
             timecodeEnd.Text = "00:00:00";
+            UpdateRange();
+            TimelineSlider.Value = 0;
+            ButtonFilePicker.Visibility = Visibility.Visible;
+            ButtonCloseFile.Visibility = Visibility.Collapsed;
             videoProcessing = new VideoProcessing();
             SetFieldsLockStatus(false);
 
             return;
         }
 
-        // Analyzing a file selected via drag and dopping or using "Open File" dialog
+        // Analyzing a file selected via drag and dropping or using "Open File" dialog
         private void OpenSelectedFile(string FileToOpen)
         {
             Console.WriteLine("Opening file: " + FileToOpen);
 
             if (videoProcessing.LoadFile(FileToOpen) == true)
             {
+                ButtonFilePicker.Visibility = Visibility.Collapsed;
+                ButtonCloseFile.Visibility = Visibility.Visible;
+                MediaPlayer.Visibility = Visibility.Visible;
                 Console.WriteLine("File opened successfully");
             } else
             {
@@ -105,7 +115,6 @@ namespace VideoTrimmer
             // Get video duration and paste it into "End" timecode TextBox
             timecodeStart.Text = "00:00:00";
             timecodeEnd.Text = videoProcessing.GetDuration().ToString(@"hh\:mm\:ss");
-
             mediaPlayerTimeline.Source = new Uri(videoProcessing.GetFilePath());
             mediaPlayerClock = mediaPlayerTimeline.CreateClock();
             MediaPlayer.Clock = mediaPlayerClock;
@@ -135,8 +144,8 @@ namespace VideoTrimmer
             else FileNameToDisplay = videoProcessing.GetFilePath();
 
             // Update display
-            fileNameLabel.Content = "✔️ " + FileNameToDisplay;
-            fileNameLabel.ToolTip = videoProcessing.GetFilePath();
+            FileNameLabel.Content = FileNameToDisplay;
+            FileNameLabel.ToolTip = videoProcessing.GetFilePath();
 
             return;
         }
@@ -452,6 +461,11 @@ namespace VideoTrimmer
         private void ClearKeyboardFocus(object sender, MouseButtonEventArgs e)
         {
             Keyboard.ClearFocus();
+        }
+
+        private void ButtonCloseFile_Click(object sender, RoutedEventArgs e)
+        {
+            ResetFilePicker();
         }
     }
 }
