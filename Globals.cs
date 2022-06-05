@@ -5,8 +5,8 @@ public static class Globals
 
     public const string appTitle = "Video Trimmer";
     public const string description = "";
-    public const string company = "Rendeer";
-    public const string copyright = "Copyright © Rendeer 2021";
+    public const string company = "Video Trimmer Contributors";
+    public const string copyright = "Copyright © Video Trimmer Contributors 2019-2022";
 
     private const string majorVersion = "1";
     private const string minorVersion = "0";
