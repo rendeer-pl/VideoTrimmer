@@ -9,9 +9,9 @@ public static class Globals
     public const string copyright = "Copyright © Video Trimmer Contributors 2019-2022";
 
     private const string majorVersion = "1";
-    private const string minorVersion = "0";
+    private const string minorVersion = "1";
     private const string releaseVersion = "0";
-    private const string buildDate = "211026";
+    private const string buildDate = "220605";
 
     public const string assemblyVersion = majorVersion + "." + minorVersion + "." + releaseVersion + ".0";
     public const string customVersion = majorVersion + "." + minorVersion + "." + releaseVersion + "." + buildDate;
