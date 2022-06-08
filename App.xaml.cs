@@ -28,14 +28,20 @@ namespace VideoTrimmer
             string appPath = Globals.appOriginPath;
             string localPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\VideoTrimmer";
 
-            if (File.Exists(appPath + "\\ffmpeg.exe") || File.Exists(localPath + "\\ffmpeg.exe"))
+            if (File.Exists(appPath + "\\ffmpeg.exe")) {
+                Console.WriteLine("FFmpeg has been found");
+                Globals.FFmpegPath = appPath + "\\ffmpeg.exe";
+                CreateMainWindow();
+            } else if (File.Exists(localPath + "\\ffmpeg.exe"))
             {
                 Console.WriteLine("FFmpeg has been found");
+                Globals.FFmpegPath = localPath + "\\ffmpeg.exe";
                 CreateMainWindow();
             }
             else
             {
                 // FFmpeg not found
+                Console.WriteLine("FFmpeg has *not* been found");
 
                 // Show dialog asking if the FFmpeg should be downloaded automatically
                 MessageBoxResult messageBoxResult = MessageBox.Show("In order to work, Video Trimmer needs the FFmpeg library. Click OK to download it automatically.", "FFmpeg required", MessageBoxButton.OKCancel, MessageBoxImage.Information);
