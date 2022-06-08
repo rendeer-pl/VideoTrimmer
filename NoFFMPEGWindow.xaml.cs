@@ -5,9 +5,9 @@ namespace VideoTrimmer
     /// <summary>
     /// Interaction logic for NoFFMPEGWindow.xaml
     /// </summary>
-    public partial class NoFFMPEGWindow : Window
+    public partial class NoFFmpegWindow : Window
     {
-        public NoFFMPEGWindow()
+        public NoFFmpegWindow()
         {
             InitializeComponent();
         }
