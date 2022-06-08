@@ -5,6 +5,8 @@
              Startup="Application_Startup">
     <Application.Resources>
 
+        <SolidColorBrush x:Key="FocusBorderColor" Color="#FFF0F0F0"/>
+
         <ControlTemplate x:Key="HyperlinkButtonTemplate" TargetType="{x:Type Button}">
             <Border x:Name="border" BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}" SnapsToDevicePixels="True" Cursor="Hand">
                 <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
@@ -25,6 +27,21 @@
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Foreground" Value="#FFBEE6FD"/>
+                </Trigger>
+                <Trigger Property="IsEnabled"  Value="True">
+                    <Setter Property="FocusVisualStyle">
+                        <Setter.Value>
+                            <Style>
+                                <Setter Property="Control.Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <Rectangle Margin="-2,-2,-2,-2" SnapsToDevicePixels="True" Stroke="{StaticResource FocusBorderColor}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Setter.Value>
+                    </Setter>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -138,7 +155,7 @@
                                 <Setter Property="Control.Template">
                                     <Setter.Value>
                                         <ControlTemplate>
-                                            <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="True" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                                            <Rectangle Margin="-2,-2,-2,-2" SnapsToDevicePixels="True" Stroke="{StaticResource FocusBorderColor}" StrokeThickness="1" StrokeDashArray="1 2"/>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
