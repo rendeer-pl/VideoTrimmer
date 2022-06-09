@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VideoTrimmer"
         mc:Ignorable="d"
-        Title="About Video Trimmer" Height="300" Width="500" Background="#FF212121">
+        Title="About Video Trimmer" Height="300" Width="500" Background="#FF212121" ResizeMode="NoResize">
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="180" />
