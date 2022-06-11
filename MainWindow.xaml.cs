@@ -111,7 +111,6 @@ namespace VideoTrimmer
                 Console.WriteLine("Couldn't open file");
             }
 
-
             // Unlock editable fields
             SetFieldsLockStatus(true);
 
@@ -501,6 +500,43 @@ namespace VideoTrimmer
         private void ButtonCloseFile_Click(object sender, RoutedEventArgs e)
         {
             ResetFilePicker();
+        }
+
+        private void TimelineMarker_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                // get a usable position of the mouse (within the slider's width)
+                double pixelOffset = Math.Min(Math.Max(e.MouseDevice.GetPosition(TimelineSlider).X, 0), TimelineSlider.ActualWidth - 10);
+
+                // divide by total length of the slider
+                double ratio = pixelOffset / (TimelineSlider.ActualWidth - 10);
+
+                // get the desired time
+                int newTime = (int)(videoProcessing.GetDuration().TotalMilliseconds * ratio);
+
+                // attempt to set it
+                System.Windows.Controls.Button senderButton = (System.Windows.Controls.Button)sender;
+                System.Windows.Controls.TextBox TextBoxToUse;
+
+                switch (senderButton.Tag.ToString())
+                {
+                    case "Start":
+                        TextBoxToUse = timecodeStart;
+                        break;
+                    case "End":
+                        TextBoxToUse = timecodeEnd;
+                        break;
+                    default:
+                        Console.WriteLine("Couldn't identify Timeline marker button");
+                        return;
+                }
+
+                TimeSpan newTimeSpan = new TimeSpan(0, 0, 0, 0, newTime);
+                TextBoxToUse.Text = newTimeSpan.ToString(@"hh\:mm\:ss");
+
+                ValidateTimecodeTextBox(TextBoxToUse);
+            }
         }
     }
 }
