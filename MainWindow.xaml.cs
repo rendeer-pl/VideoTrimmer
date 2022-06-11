@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using Path = System.IO.Path;
+using System.Windows.Controls;
 
 namespace VideoTrimmer
 {
@@ -49,6 +50,8 @@ namespace VideoTrimmer
             recompressFile.IsEnabled = NewLockStatus;
             PlayPauseButton.IsEnabled = NewLockStatus;
             TimelineSlider.IsEnabled = NewLockStatus;
+            TimelineStartButton.IsEnabled = NewLockStatus;
+            TimelineEndButton.IsEnabled = NewLockStatus;
             StartTimecodePickButton.IsEnabled = NewLockStatus;
             EndTimecodePickButton.IsEnabled = NewLockStatus;
 
@@ -178,6 +181,12 @@ namespace VideoTrimmer
         {
             TimelineSlider.SelectionStart = TimeSpan.Parse(timecodeStart.Text).TotalMilliseconds;
             TimelineSlider.SelectionEnd = TimeSpan.Parse(timecodeEnd.Text).TotalMilliseconds;
+
+            double Start = TimeSpan.Parse(timecodeStart.Text).TotalMilliseconds / videoProcessing.GetDuration().TotalMilliseconds;
+            double End = TimeSpan.Parse(timecodeEnd.Text).TotalMilliseconds / videoProcessing.GetDuration().TotalMilliseconds;
+
+            Canvas.SetLeft(TimelineStartButton, Start * (TimelineSlider.ActualWidth - 10));
+            Canvas.SetLeft(TimelineEndButton, End * (TimelineSlider.ActualWidth - 10));
 
             return;
         }
@@ -456,6 +465,32 @@ namespace VideoTrimmer
 
             // attempt to set it as in timecode
             ValidateTimecodeTextBox(TextBoxToUpdate);
+        }
+
+        // User wants to jump to the position of the Start or End marker
+        private void OnTimelineMarkerButtonClicked(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.Button senderButton = (System.Windows.Controls.Button)sender;
+
+            System.Windows.Controls.TextBox TextBoxToUse;
+
+            switch (senderButton.Tag.ToString())
+            {
+                case "Start":
+                    TextBoxToUse = timecodeStart;
+                    break;
+                case "End":
+                    TextBoxToUse = timecodeEnd;
+                    break;
+                default:
+                    Console.WriteLine("Couldn't identify Timeline marker button");
+                    return;
+            }
+
+            // do the jump and pause
+            TimeSpan ts = TimeSpan.Parse(TextBoxToUse.Text);
+            mediaPlayerClock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
+            mediaPlayerClock.Controller.Pause();
         }
 
         private void ClearKeyboardFocus(object sender, MouseButtonEventArgs e)
