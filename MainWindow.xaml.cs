@@ -438,6 +438,18 @@ namespace VideoTrimmer
             SliderUpdatesPossible = true;
         }
 
+        // fired when dragging the thumb over the timeline and when clicking somewhere on the timeline
+        private void TimelineSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            // if the difference between the media clock and the slider is bigger than a second and when the player is not paused and when slider updates are possible (which means: when not currently dragging the thumb)
+            if ((Math.Abs(mediaPlayerClock.CurrentTime.Value.TotalMilliseconds - e.NewValue) > 1000) && !mediaPlayerClock.IsPaused && SliderUpdatesPossible)
+            {
+                mediaPlayerClock.Controller.Pause();
+                TimeSpan ts = new TimeSpan(0, 0, 0, 0, (int)e.NewValue);
+                mediaPlayerClock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
+                mediaPlayerClock.Controller.Resume();
+            }
+        }
 
         // User wants to use current position of the video player as the Start or End timecode
         private void OnTimecodePickButtonClicked(object sender, RoutedEventArgs e)

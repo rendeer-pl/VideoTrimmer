@@ -50,7 +50,7 @@
         </Grid>
 
         <!-- timeline -->
-        <Slider x:Name="TimelineSlider" Margin="0" Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="2" Height="30" IsEnabled="False" MinWidth="355" HorizontalAlignment="Stretch" IsSelectionRangeEnabled="True" Style="{DynamicResource TimelineSlider}">
+        <Slider x:Name="TimelineSlider" Margin="0" Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="2" Height="30" IsEnabled="False" MinWidth="355" HorizontalAlignment="Stretch" IsSelectionRangeEnabled="True" Style="{DynamicResource TimelineSlider}" IsMoveToPointEnabled="True" ValueChanged="TimelineSlider_ValueChanged">
             <Slider.FocusVisualStyle>
                 <Style>
                     <Setter Property="Control.Template">
