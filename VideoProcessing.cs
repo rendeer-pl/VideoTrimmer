@@ -60,7 +60,7 @@ namespace VideoTrimmer
         }
 
         public string GetFileName() {
-            return FileName;
+            return FileName+FileExtension;
         }
 
         public string GetFileRoot()
