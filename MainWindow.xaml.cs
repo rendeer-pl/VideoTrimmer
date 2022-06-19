@@ -421,9 +421,17 @@ namespace VideoTrimmer
             PlayPauseButton.Content = "❚❚";
             mediaPlayerClock.Controller.Resume();
         }
+        public void UpdatePlaybackTime(TimeSpan newTime)
+        {
+            if (videoProcessing.GetDuration() < newTime) newTime = videoProcessing.GetDuration();
+            if (newTime < TimeSpan.Zero) newTime = TimeSpan.Zero;
 
-         // User clicked on the slider, so let's disable automatic slider updates
-         private void SliderInteractionStarted(object sender, MouseButtonEventArgs e)
+            mediaPlayerClock.Controller.Seek(newTime, TimeSeekOrigin.BeginTime);
+            PausePlayback();
+        }
+
+        // User clicked on the slider, so let's disable automatic slider updates
+        private void SliderInteractionStarted(object sender, MouseButtonEventArgs e)
         {
             SliderUpdatesPossible = false;
         }
@@ -473,6 +481,12 @@ namespace VideoTrimmer
                     return;
             }
 
+            UpdateStartOrEndTimecode(TextBoxToUpdate);
+        }
+
+        // update Start or End timecode
+        public void UpdateStartOrEndTimecode(System.Windows.Controls.TextBox TextBoxToUpdate)
+        {
             // get current media position and set it 
             TextBoxToUpdate.Text = mediaPlayerClock.CurrentTime.Value.ToString(@"hh\:mm\:ss");
 
@@ -566,6 +580,89 @@ namespace VideoTrimmer
                 newTimeSpan = TimeSpan.Parse(TextBoxToUse.Text);
                 mediaPlayerClock.Controller.Seek(newTimeSpan, TimeSeekOrigin.BeginTime);
                 TimelineSlider.Value = newTime;
+            }
+        }
+
+        // keyboard bindings
+        public void KeyPress_SetStart()
+        {
+            UpdateStartOrEndTimecode(timecodeStart);
+        }
+
+        public void KeyPress_SetEnd()
+        {
+            UpdateStartOrEndTimecode(timecodeEnd);
+        }
+
+        public void KeyPress_GoToStart()
+        {
+            mediaPlayerClock.Controller.Seek(TimeSpan.Zero, TimeSeekOrigin.BeginTime);
+            PausePlayback();
+        }
+
+        public void KeyPress_GoToEnd()
+        {
+            mediaPlayerClock.Controller.Seek(MediaPlayer.NaturalDuration.TimeSpan, TimeSeekOrigin.BeginTime);
+            PausePlayback();
+        }
+
+        public void KeyPress_GoToPreviousSecond()
+        {
+            UpdatePlaybackTime((TimeSpan)(mediaPlayerClock.CurrentTime - TimeSpan.FromSeconds(1)));
+        }
+
+        public void KeyPress_GoToNextSecond()
+        {
+            UpdatePlaybackTime((TimeSpan)(mediaPlayerClock.CurrentTime + TimeSpan.FromSeconds(1)));
+        }
+
+        public void KeyPress_TogglePause()
+        {
+            bool wasPaused = mediaPlayerClock.IsPaused || mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
+
+            if (wasPaused) ResumePlayback();
+            else PausePlayback();
+        }
+
+        private void OnKeyDownHandler(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (videoProcessing.GetFilePath() == null) return;
+
+            switch (e.Key)
+            {
+                case Key.I:
+                    KeyPress_SetStart();
+                    break;
+                case Key.OemOpenBrackets:
+                    KeyPress_SetStart();
+                    break;
+                case Key.O:
+                    KeyPress_SetEnd();
+                    break;
+                case Key.OemCloseBrackets:
+                    KeyPress_SetEnd();
+                    break;
+                case Key.Up:
+                    KeyPress_GoToStart();
+                    break;
+                case Key.Home:
+                    KeyPress_GoToStart();
+                    break;
+                case Key.Down:
+                    KeyPress_GoToEnd();
+                    break;
+                case Key.End:
+                    KeyPress_GoToEnd();
+                    break;
+                case Key.Left:
+                    KeyPress_GoToPreviousSecond();
+                    break;
+                case Key.Right:
+                    KeyPress_GoToNextSecond();
+                    break;
+                case Key.Space:
+                    KeyPress_TogglePause();
+                    break;
             }
         }
     }

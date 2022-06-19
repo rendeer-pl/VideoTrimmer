@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VideoTrimmer"
         mc:Ignorable="d"
-        Title="Video Trimmer" Height="655" Width="630" Background="#FF212121" DragEnter="Window_DragEnter" DragLeave="Window_DragLeave" Drop="Window_DragDrop" AllowDrop="True" MouseDown="ClearKeyboardFocus" MinWidth="430" MinHeight="600" ResizeMode="CanResizeWithGrip">
+        Title="Video Trimmer" Height="655" Width="630" Background="#FF212121" DragEnter="Window_DragEnter" DragLeave="Window_DragLeave" Drop="Window_DragDrop" AllowDrop="True" MouseDown="ClearKeyboardFocus" MinWidth="430" MinHeight="600" ResizeMode="CanResizeWithGrip" PreviewKeyDown="OnKeyDownHandler">
 
     <Grid Margin="30,20" MouseDown="ClearKeyboardFocus">
         <Grid.RowDefinitions>
