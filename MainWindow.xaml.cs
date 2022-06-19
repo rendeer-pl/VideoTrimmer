@@ -560,8 +560,12 @@ namespace VideoTrimmer
 
                 TimeSpan newTimeSpan = new TimeSpan(0, 0, 0, 0, newTime);
                 TextBoxToUse.Text = newTimeSpan.ToString(@"hh\:mm\:ss");
-
                 ValidateTimecodeTextBox(TextBoxToUse);
+
+                // update the position of the timeline thumb
+                newTimeSpan = TimeSpan.Parse(TextBoxToUse.Text);
+                mediaPlayerClock.Controller.Seek(newTimeSpan, TimeSeekOrigin.BeginTime);
+                TimelineSlider.Value = newTime;
             }
         }
     }
