@@ -234,7 +234,18 @@ namespace VideoTrimmer
             System.Windows.Controls.TextBox senderTextBox = (System.Windows.Controls.TextBox)sender;
             ValidateTimecodeTextBox(senderTextBox);
         }
+        private void Timecode_KeyHandler(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (videoProcessing.GetFilePath() == null) return;
 
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    Timecode_LostFocus(sender, e);
+                    ClearFocus((UIElement)sender);
+                    break;
+            }
+        }
 
         // validates values in the DesiredFileSize text box
         private void DesiredFileSize_LostFocus(object sender, RoutedEventArgs e)
@@ -267,6 +278,27 @@ namespace VideoTrimmer
             _ = Dispatcher.BeginInvoke(new Action(() => senderTextBox.Undo()));
 
             return;
+        }
+
+        private void DesiredFileSize_KeyHandler(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (videoProcessing.GetFilePath() == null) return;
+
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    DesiredFileSize_LostFocus(sender, e);
+                    ClearFocus((UIElement)sender);
+                    break;
+            }
+        }
+
+        private void ClearFocus(UIElement ElementToClear)
+        {
+            // Kill logical focus
+            FocusManager.SetFocusedElement(FocusManager.GetFocusScope(ElementToClear), null);
+            // Kill keyboard focus
+            Keyboard.ClearFocus();
         }
 
         // main logic - "TRIM VIDEO" button click
@@ -626,7 +658,11 @@ namespace VideoTrimmer
 
         private void OnKeyDownHandler(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            // ignore if there's no file
             if (videoProcessing.GetFilePath() == null) return;
+
+            // ignore if the user is currently editing a text field
+            if (Keyboard.FocusedElement == timecodeStart || Keyboard.FocusedElement == timecodeEnd || Keyboard.FocusedElement == DesiredFileSize) return;
 
             switch (e.Key)
             {
@@ -656,11 +692,14 @@ namespace VideoTrimmer
                     break;
                 case Key.Left:
                     KeyPress_GoToPreviousSecond();
+                    e.Handled = true;
                     break;
                 case Key.Right:
                     KeyPress_GoToNextSecond();
+                    e.Handled = true;
                     break;
                 case Key.Space:
+                    if (Keyboard.FocusedElement == PlayPauseButton) return;
                     KeyPress_TogglePause();
                     break;
             }
