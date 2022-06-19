@@ -17,6 +17,8 @@ namespace VideoTrimmer
         public MediaTimeline mediaPlayerTimeline = new MediaTimeline();
         public MediaClock mediaPlayerClock;
         public bool SliderUpdatesPossible = true;
+        public double mouseHoldStartingX;
+        public DateTime mouseHoldStartTime;
 
         public VideoProcessing videoProcessing = new VideoProcessing();
 
@@ -514,10 +516,22 @@ namespace VideoTrimmer
             ResetFilePicker();
         }
 
+        // fired whenev the user clicks on a timeline marker (e.g. to start a drag)
+        private void TimelineMarker_MouseLeftDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Controls.Button senderButton = (System.Windows.Controls.Button)sender;
+            mouseHoldStartingX = e.MouseDevice.GetPosition(TimelineSlider).X;
+            mouseHoldStartTime = DateTime.Now;
+        }
+
+        // fired every time the user moves the mouse after clicking on a timeline marker
         private void TimelineMarker_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                // ignore the move if the user has only now started moving and the offset is small
+                if (((DateTime.Now.Millisecond - mouseHoldStartTime.Millisecond) < 100) && (Math.Abs(mouseHoldStartingX - e.MouseDevice.GetPosition(TimelineSlider).X) < 10)) return;
+
                 // get a usable position of the mouse (within the slider's width)
                 double pixelOffset = Math.Min(Math.Max(e.MouseDevice.GetPosition(TimelineSlider).X, 0), TimelineSlider.ActualWidth - 10);
 
