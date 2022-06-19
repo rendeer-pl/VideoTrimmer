@@ -99,8 +99,10 @@ namespace VideoTrimmer
 
         public bool CheckIfFileIsAccepted(string FileToCheck)
         {
+            string extensionToCheck = Path.GetExtension(FileToCheck).ToString().ToLower();
+
             // compare against lists of supported extensions          
-            if (Array.IndexOf(SupportedVideoFormats, Path.GetExtension(FileToCheck)) >= 0 || Array.IndexOf(SupportedAudioFormats, Path.GetExtension(FileToCheck)) >= 0)
+            if (Array.IndexOf(SupportedVideoFormats, extensionToCheck) >= 0 || Array.IndexOf(SupportedAudioFormats, extensionToCheck) >= 0)
             {
                 return true;
             }
