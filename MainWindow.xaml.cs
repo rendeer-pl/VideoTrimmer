@@ -19,6 +19,7 @@ namespace VideoTrimmer
         public bool SliderUpdatesPossible = true;
         public double mouseHoldStartingX;
         public DateTime mouseHoldStartTime;
+        public bool wasPaused;
 
         public VideoProcessing videoProcessing = new VideoProcessing();
 
@@ -368,7 +369,6 @@ namespace VideoTrimmer
             Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x88, 0, 0));
         }
 
-
         // Fired whenever an object is dropped over the app window
         private void Window_DragDrop(object sender, System.Windows.DragEventArgs e)
         {
@@ -453,6 +453,7 @@ namespace VideoTrimmer
             PlayPauseButton.Content = "❚❚";
             mediaPlayerClock.Controller.Resume();
         }
+
         public void UpdatePlaybackTime(TimeSpan newTime)
         {
             if (videoProcessing.GetDuration() < newTime) newTime = videoProcessing.GetDuration();
@@ -466,13 +467,12 @@ namespace VideoTrimmer
         private void SliderInteractionStarted(object sender, MouseButtonEventArgs e)
         {
             SliderUpdatesPossible = false;
+            wasPaused = mediaPlayerClock.IsPaused || mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
         }
 
         // User finished interaction with the slider, let's update the video
         private void SliderValueManuallyChanged(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            bool wasPaused = mediaPlayerClock.IsPaused || mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
-            mediaPlayerClock.Controller.Pause();
             int SliderValue = (int)TimelineSlider.Value;
             TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
             mediaPlayerClock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
@@ -484,12 +484,12 @@ namespace VideoTrimmer
         private void TimelineSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             // if the difference between the media clock and the slider is bigger than a second and when the player is not paused and when slider updates are possible (which means: when not currently dragging the thumb)
-            if ((Math.Abs(mediaPlayerClock.CurrentTime.Value.TotalMilliseconds - e.NewValue) > 1000) && !mediaPlayerClock.IsPaused && SliderUpdatesPossible)
+            if (Math.Abs(mediaPlayerClock.CurrentTime.Value.TotalMilliseconds - e.NewValue) > 1000)
             {
                 mediaPlayerClock.Controller.Pause();
-                TimeSpan ts = new TimeSpan(0, 0, 0, 0, (int)e.NewValue);
+                int SliderValue = (int)TimelineSlider.Value;
+                TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
                 mediaPlayerClock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
-                mediaPlayerClock.Controller.Resume();
             }
         }
 
