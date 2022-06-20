@@ -486,10 +486,12 @@ namespace VideoTrimmer
             // if the difference between the media clock and the slider is bigger than a second and when the player is not paused and when slider updates are possible (which means: when not currently dragging the thumb)
             if (Math.Abs(mediaPlayerClock.CurrentTime.Value.TotalMilliseconds - e.NewValue) > 1000)
             {
+                wasPaused = CheckIfPlaybackIsPaused();
                 mediaPlayerClock.Controller.Pause();
                 int SliderValue = (int)TimelineSlider.Value;
                 TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
                 mediaPlayerClock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
+                if (!wasPaused) ResumePlayback();
             }
         }
 
@@ -546,10 +548,11 @@ namespace VideoTrimmer
                     return;
             }
 
-            // do the jump and pause
+            // do the jump
+            wasPaused = CheckIfPlaybackIsPaused();
             TimeSpan ts = TimeSpan.Parse(TextBoxToUse.Text);
-            mediaPlayerClock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
-            mediaPlayerClock.Controller.Pause();
+            UpdatePlaybackTime(ts);
+            if (!wasPaused) ResumePlayback();
         }
 
         private void ClearKeyboardFocus(object sender, MouseButtonEventArgs e)
@@ -565,7 +568,7 @@ namespace VideoTrimmer
         // fired whenev the user clicks on a timeline marker (e.g. to start a drag)
         private void TimelineMarker_MouseLeftDown(object sender, MouseButtonEventArgs e)
         {
-            System.Windows.Controls.Button senderButton = (System.Windows.Controls.Button)sender;
+            wasPaused = CheckIfPlaybackIsPaused();
             mouseHoldStartingX = e.MouseDevice.GetPosition(TimelineSlider).X;
             mouseHoldStartTime = DateTime.Now;
         }
@@ -610,9 +613,16 @@ namespace VideoTrimmer
 
                 // update the position of the timeline thumb
                 newTimeSpan = TimeSpan.Parse(TextBoxToUse.Text);
+                PausePlayback();
                 mediaPlayerClock.Controller.Seek(newTimeSpan, TimeSeekOrigin.BeginTime);
                 TimelineSlider.Value = newTime;
             }
+        }
+
+        // fired whenev the user releases a click on a timeline marker (e.g. after a drag)
+        private void TimelineMarker_MouseLeftUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!wasPaused) ResumePlayback();
         }
 
         // keyboard bindings
@@ -650,10 +660,15 @@ namespace VideoTrimmer
 
         public void KeyPress_TogglePause()
         {
-            bool wasPaused = mediaPlayerClock.IsPaused || mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
+            wasPaused = CheckIfPlaybackIsPaused();
 
             if (wasPaused) ResumePlayback();
             else PausePlayback();
+        }
+
+        public bool CheckIfPlaybackIsPaused()
+        {
+            return mediaPlayerClock.IsPaused || mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
         }
 
         private void OnKeyDownHandler(object sender, System.Windows.Input.KeyEventArgs e)
