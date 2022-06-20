@@ -19,7 +19,7 @@ namespace VideoTrimmer
         public bool SliderUpdatesPossible = true;
         public double mouseHoldStartingX;
         public DateTime mouseHoldStartTime;
-        public bool wasPaused;
+        public bool shouldPlaybackBeActive;
 
         public VideoProcessing videoProcessing = new VideoProcessing();
 
@@ -83,6 +83,8 @@ namespace VideoTrimmer
         {
             MediaPlayer.Source = null;
             mediaPlayerTimeline = new MediaTimeline();
+            mediaPlayerClock.Controller.Remove();
+            SliderUpdatesPossible = false;
             MediaPlayer.Visibility = Visibility.Collapsed;
             FileNameLabel.Content = "No video selected";
             FileNameLabel.ToolTip = "No video selected";
@@ -108,6 +110,7 @@ namespace VideoTrimmer
                 ButtonFilePicker.Visibility = Visibility.Collapsed;
                 ButtonCloseFile.Visibility = Visibility.Visible;
                 MediaPlayer.Visibility = Visibility.Visible;
+                SliderUpdatesPossible = true;
                 Console.WriteLine("File opened successfully");
             } else
             {
@@ -131,7 +134,8 @@ namespace VideoTrimmer
 
             mediaPlayerClock.Completed += delegate (object sender, EventArgs e)
             {
-                PlayPauseButton.Content = "▶";
+                shouldPlaybackBeActive = false;
+                PausePlayback();
             };
 
             TimelineSlider.AddHandler(MouseLeftButtonUpEvent,
@@ -318,6 +322,7 @@ namespace VideoTrimmer
             }
 
             // pause the current playback
+            shouldPlaybackBeActive = false;
             PausePlayback();
 
             // establish Start and Duration for the needs of the console command
@@ -341,6 +346,7 @@ namespace VideoTrimmer
         // Displays "About" window
         public void ButtonShowAbout_Click(object sender, RoutedEventArgs e)
         {
+            shouldPlaybackBeActive = false;
             PausePlayback();
             About aboutWindow = new About();
             aboutWindow.Owner = this;
@@ -432,10 +438,12 @@ namespace VideoTrimmer
 
                 if (mediaPlayerClock.IsPaused || videoEnd)
                 {
+                    shouldPlaybackBeActive = true;
                     ResumePlayback();
                 }
                 else
                 {
+                    shouldPlaybackBeActive = false;
                     PausePlayback();
                 }
             }
@@ -444,7 +452,6 @@ namespace VideoTrimmer
         private void PausePlayback()
         {
             PlayPauseButton.Content = "▶";
-
             if (mediaPlayerTimeline.Source != null) mediaPlayerClock.Controller.Pause();
         }
 
@@ -467,7 +474,7 @@ namespace VideoTrimmer
         private void SliderInteractionStarted(object sender, MouseButtonEventArgs e)
         {
             SliderUpdatesPossible = false;
-            wasPaused = mediaPlayerClock.IsPaused || mediaPlayerClock.NaturalDuration == mediaPlayerClock.CurrentTime;
+            mediaPlayerClock.Controller.Pause();
         }
 
         // User finished interaction with the slider, let's update the video
@@ -476,7 +483,7 @@ namespace VideoTrimmer
             int SliderValue = (int)TimelineSlider.Value;
             TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
             mediaPlayerClock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
-            if (wasPaused == false) mediaPlayerClock.Controller.Resume();
+            if (shouldPlaybackBeActive && e.LeftButton != MouseButtonState.Pressed) ResumePlayback();
             SliderUpdatesPossible = true;
         }
 
@@ -486,12 +493,12 @@ namespace VideoTrimmer
             // if the difference between the media clock and the slider is bigger than a second and when the player is not paused and when slider updates are possible (which means: when not currently dragging the thumb)
             if (Math.Abs(mediaPlayerClock.CurrentTime.Value.TotalMilliseconds - e.NewValue) > 1000)
             {
-                wasPaused = CheckIfPlaybackIsPaused();
+                bool wasPaused = CheckIfPlaybackIsPaused();
                 mediaPlayerClock.Controller.Pause();
                 int SliderValue = (int)TimelineSlider.Value;
                 TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
                 mediaPlayerClock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
-                if (!wasPaused) ResumePlayback();
+                if (wasPaused==false) ResumePlayback();
             }
         }
 
@@ -549,10 +556,9 @@ namespace VideoTrimmer
             }
 
             // do the jump
-            wasPaused = CheckIfPlaybackIsPaused();
             TimeSpan ts = TimeSpan.Parse(TextBoxToUse.Text);
             UpdatePlaybackTime(ts);
-            if (!wasPaused) ResumePlayback();
+            if (shouldPlaybackBeActive) ResumePlayback();
         }
 
         private void ClearKeyboardFocus(object sender, MouseButtonEventArgs e)
@@ -562,13 +568,14 @@ namespace VideoTrimmer
 
         private void ButtonCloseFile_Click(object sender, RoutedEventArgs e)
         {
+            shouldPlaybackBeActive = false;
+            PausePlayback();
             ResetFilePicker();
         }
 
         // fired whenev the user clicks on a timeline marker (e.g. to start a drag)
         private void TimelineMarker_MouseLeftDown(object sender, MouseButtonEventArgs e)
         {
-            wasPaused = CheckIfPlaybackIsPaused();
             mouseHoldStartingX = e.MouseDevice.GetPosition(TimelineSlider).X;
             mouseHoldStartTime = DateTime.Now;
         }
@@ -613,7 +620,7 @@ namespace VideoTrimmer
 
                 // update the position of the timeline thumb
                 newTimeSpan = TimeSpan.Parse(TextBoxToUse.Text);
-                PausePlayback();
+                mediaPlayerClock.Controller.Pause();
                 mediaPlayerClock.Controller.Seek(newTimeSpan, TimeSeekOrigin.BeginTime);
                 TimelineSlider.Value = newTime;
             }
@@ -622,7 +629,8 @@ namespace VideoTrimmer
         // fired whenev the user releases a click on a timeline marker (e.g. after a drag)
         private void TimelineMarker_MouseLeftUp(object sender, MouseButtonEventArgs e)
         {
-            if (!wasPaused) ResumePlayback();
+            if (shouldPlaybackBeActive) ResumePlayback();
+            else PausePlayback();
         }
 
         // keyboard bindings
@@ -660,10 +668,16 @@ namespace VideoTrimmer
 
         public void KeyPress_TogglePause()
         {
-            wasPaused = CheckIfPlaybackIsPaused();
-
-            if (wasPaused) ResumePlayback();
-            else PausePlayback();
+            if (!shouldPlaybackBeActive)
+            {
+                shouldPlaybackBeActive = true;
+                ResumePlayback();
+            }
+            else
+            {
+                shouldPlaybackBeActive = false;
+                PausePlayback();
+            }
         }
 
         public bool CheckIfPlaybackIsPaused()
