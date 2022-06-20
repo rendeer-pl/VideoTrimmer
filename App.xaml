@@ -501,6 +501,44 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <ControlTemplate x:Key="SecondaryActionHyperlinkButtonTemplate" TargetType="{x:Type Button}">
+            <Border x:Name="border" BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}" SnapsToDevicePixels="True" Cursor="Hand">
+                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="#FF838383"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource SliderThumb.Static.Background}"/>
+                </Trigger>
+                <Trigger Property="IsDefaulted" Value="True">
+                    <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource SliderThumb.Static.Border}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#FF9EC6DD"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Foreground" Value="#FFBEE6FD"/>
+                </Trigger>
+                <Trigger Property="IsEnabled"  Value="True">
+                    <Setter Property="FocusVisualStyle">
+                        <Setter.Value>
+                            <Style>
+                                <Setter Property="Control.Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <Rectangle Margin="-2,-2,-2,-2" SnapsToDevicePixels="True" Stroke="{StaticResource FocusBorderColor}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
 
     </Application.Resources>
 </Application>

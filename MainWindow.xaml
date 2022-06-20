@@ -64,8 +64,8 @@
             </Slider.FocusVisualStyle>
         </Slider>
         <Canvas Name="StartEndThumbsCanvas" Margin="-4 27 0 0" Grid.ColumnSpan="3" Grid.Column="0" Grid.Row="2">
-            <Button x:Name="TimelineStartButton" PreviewMouseMove="TimelineMarker_MouseMove" PreviewMouseLeftButtonDown="TimelineMarker_MouseLeftDown" Content="◢" FontSize="12" Width="9" Height="9" Padding="-10" Click="OnTimelineMarkerButtonClicked" Tag="Start" IsEnabled="False" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource HyperlinkButtonTemplate}"  Margin="0" />
-            <Button x:Name="TimelineEndButton" PreviewMouseMove="TimelineMarker_MouseMove" PreviewMouseLeftButtonDown="TimelineMarker_MouseLeftDown" Content="◣" FontSize="12" Width="9" Height="9" Padding="-5" Click="OnTimelineMarkerButtonClicked" Tag="End" IsEnabled="False" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource HyperlinkButtonTemplate}"  Margin="10 0 0 0" />
+            <Button x:Name="TimelineStartButton" PreviewMouseMove="TimelineMarker_MouseMove" PreviewMouseLeftButtonDown="TimelineMarker_MouseLeftDown" Content="◢" FontSize="12" Width="9" Height="9" Padding="-10" Click="OnTimelineMarkerButtonClicked" Tag="Start" IsEnabled="False" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource SecondaryActionHyperlinkButtonTemplate}"  Margin="0" />
+            <Button x:Name="TimelineEndButton" PreviewMouseMove="TimelineMarker_MouseMove" PreviewMouseLeftButtonDown="TimelineMarker_MouseLeftDown" Content="◣" FontSize="12" Width="9" Height="9" Padding="-5" Click="OnTimelineMarkerButtonClicked" Tag="End" IsEnabled="False" Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource SecondaryActionHyperlinkButtonTemplate}"  Margin="10 0 0 0" />
         </Canvas>
 
         <!-- timecode inputs row -->
