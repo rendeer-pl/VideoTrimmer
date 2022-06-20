@@ -60,10 +60,10 @@ namespace VideoTrimmer
 
         private void CreateMainWindow()
         {
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            mainWindow.Show();
-            mainWindow.Title = windowTitle;
+            Current.MainWindow = new MainWindow();
+            Current.MainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            Current.MainWindow.Show();
+            Current.MainWindow.Title = windowTitle;
         }
 
         private void DownloadFile(string localPath, string remoteFilename)
