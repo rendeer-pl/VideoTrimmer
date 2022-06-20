@@ -561,9 +561,9 @@ namespace VideoTrimmer
             if (shouldPlaybackBeActive) ResumePlayback();
         }
 
-        private void ClearKeyboardFocus(object sender, MouseButtonEventArgs e)
+        private void ResetKeyboardFocus(object sender, MouseButtonEventArgs e)
         {
-            Keyboard.ClearFocus();
+            Keyboard.Focus(TimelineSlider);
         }
 
         private void ButtonCloseFile_Click(object sender, RoutedEventArgs e)
@@ -728,8 +728,9 @@ namespace VideoTrimmer
                     e.Handled = true;
                     break;
                 case Key.Space:
-                    if (Keyboard.FocusedElement == PlayPauseButton) return;
+                    if (Keyboard.FocusedElement != TimelineSlider) return;
                     KeyPress_TogglePause();
+                    e.Handled = true;
                     break;
             }
         }
