@@ -15,7 +15,7 @@ namespace VideoTrimmer
         // Opens browser when user clicks on "Download FFmpeg" button
         private void ButtonDownload_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://ffmpeg.org/download.html");
+            System.Diagnostics.Process.Start(Globals.FFmpegDownloadLink);
         }
 
     }

@@ -48,7 +48,7 @@ namespace VideoTrimmer
                 if (messageBoxResult.ToString() == "OK")
                 {
                     // Download FFmpeg to a user folder
-                    DownloadFile(localPath, "https://github.com/rendeer-pl/ffmpeg/releases/latest/download/ffmpeg.exe");
+                    DownloadFile(localPath, Globals.FFmpegDownloadLink);
                 }
                 else
                 {

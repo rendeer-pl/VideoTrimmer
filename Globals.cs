@@ -18,6 +18,7 @@ public static class Globals
 
     public static readonly string appOriginPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
+    public static string FFmpegDownloadLink = "https://github.com/rendeer-pl/ffmpeg/releases/latest/download/ffmpeg.exe";
     public static string FFmpegPath;
 
 }
