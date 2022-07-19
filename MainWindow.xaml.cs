@@ -183,7 +183,7 @@ namespace VideoTrimmer
             }
         }
 
-        private void UpdateRange()
+        public void UpdateRange()
         {
             TimelineSlider.SelectionStart = TimeSpan.Parse(timecodeStart.Text).TotalMilliseconds;
             TimelineSlider.SelectionEnd = TimeSpan.Parse(timecodeEnd.Text).TotalMilliseconds;
