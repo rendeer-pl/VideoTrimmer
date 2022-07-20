@@ -734,5 +734,10 @@ namespace VideoTrimmer
                     break;
             }
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateRange();
+        }
     }
 }
