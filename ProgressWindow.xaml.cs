@@ -31,7 +31,7 @@ namespace VideoTrimmer
             if (MainWindow.recompressFile.IsChecked == false)
             {
                 ProgressBar.IsIndeterminate = true;
-                this.TaskbarItemInfo = new TaskbarItemInfo() { ProgressState = TaskbarItemProgressState.Indeterminate };
+                taskBarItemInfoElement.ProgressState = TaskbarItemProgressState.Indeterminate;
             }
         }
 
@@ -106,8 +106,9 @@ namespace VideoTrimmer
                 ProgressValue.Visibility = Visibility.Visible;
                 ProgressBar.Value = newProgress;
                 ProgressValue.Content = newProgress.ToString() + "%";
-                this.TaskbarItemInfo = new TaskbarItemInfo() { ProgressState = TaskbarItemProgressState.Normal };
-                this.TaskbarItemInfo.ProgressValue = (double)newProgress / 100;
+                if (isCompleted == true) taskBarItemInfoElement.ProgressState = TaskbarItemProgressState.Paused;
+                else taskBarItemInfoElement.ProgressState = TaskbarItemProgressState.Normal;
+                taskBarItemInfoElement.ProgressValue = (double)newProgress / 100;
             }), DispatcherPriority.Background);
         }
 
@@ -146,8 +147,8 @@ namespace VideoTrimmer
                     ProgressBar.Foreground = new SolidColorBrush(Colors.Red);
                     ProgressBar.Background = new SolidColorBrush(Colors.Red);
                     ProgressBar.BorderBrush = new SolidColorBrush(Colors.Red);
-                    this.TaskbarItemInfo = new TaskbarItemInfo() { ProgressState = TaskbarItemProgressState.Error };
-                    this.TaskbarItemInfo.ProgressValue = (double)100;
+                    taskBarItemInfoElement.ProgressState = TaskbarItemProgressState.Error;
+                    taskBarItemInfoElement.ProgressValue = (double)1;
                 }), DispatcherPriority.Background);
             }
         }

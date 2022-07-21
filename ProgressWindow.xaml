@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:VideoTrimmer"
         mc:Ignorable="d"
         Title="Progress" Height="200" Width="500" Background="#FF212121" ResizeMode="NoResize" Margin="0,0,0,0" Closing="Window_Closing" ContentRendered="OnContentRendered">
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="taskBarItemInfoElement" />
+    </Window.TaskbarItemInfo>
     <Grid Margin="20,20,20,20">
         <Label Name="Caption" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="21,0,0,0" Content="Trimming..." Foreground="White" Width="406" FontSize="14" />
         <ProgressBar Name="ProgressBar" HorizontalAlignment="Center" Height="22" Margin="0,30,0,0" VerticalAlignment="Top" Width="390" IsEnabled="False" FontSize="14" Padding="0,-2,0,0" Template="{DynamicResource ProgressBarControlTemplate}" />
