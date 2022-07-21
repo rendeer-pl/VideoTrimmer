@@ -335,11 +335,17 @@ namespace VideoTrimmer
             // set process settings
             videoProcessing.SetParameters(Start, End, (bool)removeAudio.IsChecked, (bool)recompressFile.IsChecked, DesiredFileSizeInt);
 
+            // dim the main window
+            Opacity = 0.3;
+
             // open the progress window that executes the main process
             ProgressWindow progressWindow = new ProgressWindow();
             progressWindow.Owner = this;
             progressWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             progressWindow.ShowDialog();
+
+            // restore the full brightness of the main window
+            Opacity = 1.0;
 
         }
 
