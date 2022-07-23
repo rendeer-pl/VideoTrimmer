@@ -139,9 +139,9 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Border x:Name="checkBoxBorder" CornerRadius="1" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                <Border x:Name="checkBoxBorder" CornerRadius="3" Width="18" Height="18" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="1 1 3 1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                     <Grid x:Name="markGrid">
-                        <Path x:Name="optionMark" Data="F1M9.97498,1.22334L4.6983,9.09834 4.52164,9.09834 0,5.19331 1.27664,3.52165 4.255,6.08833 8.33331,1.52588E-05 9.97498,1.22334z" Fill="#FF212121" Margin="1" Opacity="0" Stretch="None"/>
+                        <Path x:Name="optionMark" Data="F1 M 13.5 5 L 7.28 11.115 L 3.95 8.1" Stroke="#FF212121" StrokeThickness="1.25" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Margin="1" Opacity="0" />
                         <Rectangle x:Name="indeterminateMark" Fill="#FF212121" Margin="2" Opacity="0"/>
                     </Grid>
                 </Border>
@@ -149,6 +149,7 @@
             </Grid>
             <ControlTemplate.Triggers>
                 <Trigger Property="HasContent" Value="True">
+                    <Setter Property="Foreground" Value="White"/>
                     <Setter Property="FocusVisualStyle">
                         <Setter.Value>
                             <Style>
@@ -164,31 +165,47 @@
                     </Setter>
                     <Setter Property="Padding" Value="4,-1,0,0"/>
                 </Trigger>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" TargetName="checkBoxBorder" Value="#FFF3F9FF"/>
-                    <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="#FF5593FF"/>
-                    <Setter Property="Fill" TargetName="optionMark" Value="#FF212121"/>
-                    <Setter Property="Fill" TargetName="indeterminateMark" Value="#FF212121"/>
+                <Trigger Property="IsChecked" Value="False">
+                    <Setter Property="Background" TargetName="checkBoxBorder" Value="#FF212121"/>
                 </Trigger>
+                <Trigger Property="IsChecked" Value="{x:Null}">
+                    <Setter Property="Background" TargetName="checkBoxBorder" Value="#FF212121"/>
+                    <Setter Property="Opacity" TargetName="optionMark" Value="0"/>
+                    <Setter Property="Opacity" TargetName="indeterminateMark" Value="1"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" TargetName="checkBoxBorder" Value="#60CDFF"/>
+                    <Setter Property="Opacity" TargetName="optionMark" Value="1"/>
+                    <Setter Property="Opacity" TargetName="indeterminateMark" Value="0"/>
+                    <Setter Property="BorderThickness"  TargetName="checkBoxBorder" Value="0"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="True" />
+                        <Condition Property="IsChecked" Value="False" />
+                    </MultiTrigger.Conditions>
+                    <MultiTrigger.Setters>
+                        <Setter Property="Background" TargetName="checkBoxBorder" Value="#353535"/>
+                    </MultiTrigger.Setters>
+                </MultiTrigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="True" />
+                        <Condition Property="IsChecked" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <MultiTrigger.Setters>
+                        <Setter Property="Background" TargetName="checkBoxBorder" Value="#89DDFF"/>
+                    </MultiTrigger.Setters>
+                </MultiTrigger>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" TargetName="checkBoxBorder" Value="#FFE6E6E6"/>
+                    <Setter Property="Foreground" Value="#FFADADAD"/>
+                    <Setter Property="Background" TargetName="checkBoxBorder" Value="#FF212121"/>
                     <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="#FFBCBCBC"/>
-                    <Setter Property="Fill" TargetName="optionMark" Value="#FF707070"/>
                     <Setter Property="Fill" TargetName="indeterminateMark" Value="#FF707070"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" TargetName="checkBoxBorder" Value="#FFD9ECFF"/>
-                    <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="#FF3C77DD"/>
-                    <Setter Property="Fill" TargetName="optionMark" Value="#FF212121"/>
+                    <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="#60CDFF"/>
                     <Setter Property="Fill" TargetName="indeterminateMark" Value="#FF212121"/>
-                </Trigger>
-                <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Opacity" TargetName="optionMark" Value="1"/>
-                    <Setter Property="Opacity" TargetName="indeterminateMark" Value="0"/>
-                </Trigger>
-                <Trigger Property="IsChecked" Value="{x:Null}">
-                    <Setter Property="Opacity" TargetName="optionMark" Value="0"/>
-                    <Setter Property="Opacity" TargetName="indeterminateMark" Value="1"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>

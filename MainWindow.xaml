@@ -81,16 +81,6 @@
 
         <!-- options -->
         <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" VerticalAlignment="Center">
-            <StackPanel.Resources>
-                <Style TargetType="{x:Type CheckBox}">
-                    <Setter Property="Foreground" Value="White"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Foreground" Value="#FFADADAD"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </StackPanel.Resources>
             <CheckBox Name="removeAudio" ToolTipService.ShowOnDisabled="True" Content="Remove audio" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="The output video will not contain any audio streams." FontSize="14" Template="{DynamicResource CheckBoxControlTemplate}" HorizontalAlignment="Left"/>
             <CheckBox Name="recompressFile" ToolTipService.ShowOnDisabled="True" Content="Recompress file" IsEnabled="False" VerticalContentAlignment="Center" Margin="0,5" ToolTip="Trimming will take significantly more time, but will offer greater precision while trimming." Checked="RecompressFile_ValueChanged" Unchecked="RecompressFile_ValueChanged" FontSize="14" Template="{DynamicResource CheckBoxControlTemplate}" HorizontalAlignment="Left"/>
         </StackPanel>
