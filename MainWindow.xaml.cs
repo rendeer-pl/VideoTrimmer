@@ -346,18 +346,23 @@ namespace VideoTrimmer
 
             // restore the full brightness of the main window
             Opacity = 1.0;
-
         }
 
         // Displays "About" window
         public void ButtonShowAbout_Click(object sender, RoutedEventArgs e)
         {
+            // dim the main window
+            Opacity = 0.3;
+
             shouldPlaybackBeActive = false;
             PausePlayback();
             About aboutWindow = new About();
             aboutWindow.Owner = this;
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             aboutWindow.ShowDialog();
+
+            // restore the full brightness of the main window
+            Opacity = 1.0;
         }
 
         // Fired whenever an object is dragged over the app window
